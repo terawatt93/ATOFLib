@@ -1,0 +1,7 @@
+[ ATOFLib.so ]
+# List of selected classes
+class ATOFProcess
+class GUIclass
+class TOFComponent
+class TOFWindow
+header ATOFLib.hh
