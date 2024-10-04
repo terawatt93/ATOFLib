@@ -1192,19 +1192,54 @@ void ATOFProcess::RefitAutoFitted()
 
 }
 
-void ATOFProcess::Add(ATOFProcess &p,double k)
+void AddMV(TH2F *f1, TH2F *f2, double k ,double Mv)
+{
+	for(int i=0;i<f1->GetNbinsX();i++)
+	{
+		for(int j=0;j<f1->GetNbinsY();j++)
+		{
+			double BinCenterY=f1->GetYaxis()->GetBinCenter(i+1);
+			double NewBinCenter=BinCenterY+Mv;
+			int BinNumber=f2->GetYaxis()->FindBin(NewBinCenter);
+			if(BinNumber==0)
+			{
+				BinNumber=1;
+			}
+			if(BinNumber==f2->GetNbinsY()+1)
+			{
+				BinNumber=f2->GetNbinsY();
+			}
+			double BinValue=f1->GetBinContent(i+1,j+1)+k*f2->GetBinContent(i+1,BinNumber);
+			double BinError=sqrt(pow(f1->GetBinError(i+1,j+1),2)+pow(k*f2->GetBinError(i+1,BinNumber),2));
+			f1->SetBinContent(i+1,j+1,BinValue);
+			f1->SetBinError(i+1,j+1,BinError);
+		}
+	}
+}
+
+void ATOFProcess::Add(ATOFProcess &p,double k,double MV)
 {
 	TH2F _FullSpectrum, _Anticoincedence, _Coincedence, _PureCoincedence;
 	_FullSpectrum=p.FullSpectrum;
 	_Anticoincedence=p.Anticoincedence;
 	_Coincedence=p.Coincedence;
 	_PureCoincedence=p.PureCoincedence;
-
-	FullSpectrum.Add(&_FullSpectrum,k);
-	Anticoincedence.Add(&_Anticoincedence,k);
-	Coincedence.Add(&_Coincedence,k);
-	PureCoincedence.Add(&_PureCoincedence,k);
 	
+	if(MV==0)
+	{
+		FullSpectrum.Add(&_FullSpectrum,k);
+		Anticoincedence.Add(&_Anticoincedence,k);
+		Coincedence.Add(&_Coincedence,k);
+		PureCoincedence.Add(&_PureCoincedence,k);
+	}
+	else
+	{
+		AddMV(&FullSpectrum,&_FullSpectrum,k,MV);
+		AddMV(&Coincedence,&_Coincedence,k,MV);
+		AddMV(&Anticoincedence,&_Anticoincedence,k,MV);
+		AddMV(&PureCoincedence,&_PureCoincedence,k,MV);
+	}
+
 	//7 vfz 2024 продолжить здесь!!!
 	if(TOFComponents.size()==p.TOFComponents.size())
 	{

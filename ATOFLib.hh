@@ -121,7 +121,7 @@ class ATOFProcess:public TNamed
 	void AssignPointers(GUIclass *GUI=0);
 	int HasManualFits();
 	void RefitAutoFitted();
-	void Add(ATOFProcess &p,double k=-1);
+	void Add(ATOFProcess &p,double k=-1,double TMove=0);
 	double PeakSubstrateRatio=0;
 	double TOFDependenceLeft=0,TOFDependenceRight=10000;//границы для временных окон по энергии: если энергия лежит вне этих окон, то ширина и положение фиксируются по ближайшей границе 
 	ATOFProcess *ReferenceATOF=0;//!
