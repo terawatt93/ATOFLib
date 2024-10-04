@@ -1192,7 +1192,7 @@ void ATOFProcess::RefitAutoFitted()
 
 }
 
-void Move(TH2F *f1,double Mv)
+void MoveTH2F(TH2F *f1,double Mv)
 {
 	vector<vector<double> > Content;
 	vector<vector<double> > Error;
@@ -1258,33 +1258,33 @@ void ATOFProcess::Add(ATOFProcess &p,double k,double MV)
 {
 	TH2F _FullSpectrum, _Anticoincedence, _Coincedence, _PureCoincedence;
 	
-	if(MV!=0)
+	/*if(MV!=0)
 	{
 		Move(&(p.FullSpectrum),MV);
 		Move(&(p.Anticoincedence),MV);
 		Move(&(p.Coincedence),MV);
 		Move(&(p.PureCoincedence),MV);
-	}
+	}*/
 	
 	_FullSpectrum=p.FullSpectrum;
 	_Anticoincedence=p.Anticoincedence;
 	_Coincedence=p.Coincedence;
 	_PureCoincedence=p.PureCoincedence;
 	
-	//if(MV==0)
+	if(MV==0)
 	{
 		FullSpectrum.Add(&_FullSpectrum,k);
 		Anticoincedence.Add(&_Anticoincedence,k);
 		Coincedence.Add(&_Coincedence,k);
 		PureCoincedence.Add(&_PureCoincedence,k);
 	}
-	/*else
+	else
 	{
 		AddMV(&FullSpectrum,&_FullSpectrum,k,MV);
 		AddMV(&Coincedence,&_Coincedence,k,MV);
 		AddMV(&Anticoincedence,&_Anticoincedence,k,MV);
 		AddMV(&PureCoincedence,&_PureCoincedence,k,MV);
-	}*/
+	}
 
 	//7 vfz 2024 продолжить здесь!!!
 	if(TOFComponents.size()==p.TOFComponents.size())

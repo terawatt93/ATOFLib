@@ -84,6 +84,8 @@ class TOFWindow:public TNamed
 	ClassDef(TOFWindow,VERSION);
 };
 
+void MoveTH2F(TH2F *f1,double Mv);
+
 class ATOFProcess:public TNamed
 {
 	public:
