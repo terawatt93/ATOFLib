@@ -1198,8 +1198,8 @@ void AddMV(TH2F *f1, TH2F *f2, double k ,double Mv)
 	{
 		for(int j=0;j<f1->GetNbinsY();j++)
 		{
-			double BinCenterY=f1->GetYaxis()->GetBinCenter(i+1);
-			double NewBinCenter=BinCenterY+Mv;
+			double BinCenterY=f1->GetYaxis()->GetBinCenter(j+1);
+			double NewBinCenter=BinCenterY-Mv;
 			int BinNumber=f2->GetYaxis()->FindBin(NewBinCenter);
 			if(BinNumber==0)
 			{
