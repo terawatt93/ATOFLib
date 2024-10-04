@@ -1215,8 +1215,8 @@ void MoveTH2F(TH2F *f1,double Mv)
 			{
 				BinNumber=f1->GetNbinsY();
 			}
-			Content[i][j]=f1->GetBinContent(i+1,j+1);
-			Error[i][j]=f1->GetBinError(i+1,j+1);
+			Content[i][j]=f1->GetBinContent(i+1,BinNumber);
+			Error[i][j]=f1->GetBinError(i+1,BinNumber);
 		}
 	}
 	for(int i=0;i<f1->GetNbinsX();i++)
