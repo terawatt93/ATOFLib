@@ -1192,6 +1192,43 @@ void ATOFProcess::RefitAutoFitted()
 
 }
 
+void Move(TH2F *f1,double Mv)
+{
+	vector<vector<double> > Content;
+	vector<vector<double> > Error;
+	Content.resize(f1->GetNbinsX());
+	Error.resize(f1->GetNbinsX());
+	for(int i=0;i<f1->GetNbinsX();i++)
+	{
+		Content[i].resize(f1->GetNbinsY());
+		Error[i].resize(f1->GetNbinsY());
+		for(int j=0;j<f1->GetNbinsY();j++)
+		{
+			double BinCenterY=f1->GetYaxis()->GetBinCenter(j+1);
+			double NewBinCenter=BinCenterY-Mv;
+			int BinNumber=f1->GetYaxis()->FindBin(NewBinCenter);
+			if(BinNumber==0)
+			{
+				BinNumber=1;
+			}
+			if(BinNumber==f1->GetNbinsY()+1)
+			{
+				BinNumber=f1->GetNbinsY();
+			}
+			Content[i][j]=f1->GetBinContent(i+1,j+1);
+			Error[i][j]=f1->GetBinError(i+1,j+1);
+		}
+	}
+	for(int i=0;i<f1->GetNbinsX();i++)
+	{
+		for(int j=0;j<f1->GetNbinsY();j++)
+		{
+			f1->SetBinContent(i,j,Content[i][j]);
+			f1->SetBinError(i,j,Error[i][j]);
+		}
+	}
+}
+
 void AddMV(TH2F *f1, TH2F *f2, double k ,double Mv)
 {
 	for(int i=0;i<f1->GetNbinsX();i++)
@@ -1220,25 +1257,34 @@ void AddMV(TH2F *f1, TH2F *f2, double k ,double Mv)
 void ATOFProcess::Add(ATOFProcess &p,double k,double MV)
 {
 	TH2F _FullSpectrum, _Anticoincedence, _Coincedence, _PureCoincedence;
+	
+	if(MV!=0)
+	{
+		Move(&(p.FullSpectrum),MV);
+		Move(&(p.Anticoincedence),MV);
+		Move(&(p.Coincedence),MV);
+		Move(&(p.PureCoincedence),MV);
+	}
+	
 	_FullSpectrum=p.FullSpectrum;
 	_Anticoincedence=p.Anticoincedence;
 	_Coincedence=p.Coincedence;
 	_PureCoincedence=p.PureCoincedence;
 	
-	if(MV==0)
+	//if(MV==0)
 	{
 		FullSpectrum.Add(&_FullSpectrum,k);
 		Anticoincedence.Add(&_Anticoincedence,k);
 		Coincedence.Add(&_Coincedence,k);
 		PureCoincedence.Add(&_PureCoincedence,k);
 	}
-	else
+	/*else
 	{
 		AddMV(&FullSpectrum,&_FullSpectrum,k,MV);
 		AddMV(&Coincedence,&_Coincedence,k,MV);
 		AddMV(&Anticoincedence,&_Anticoincedence,k,MV);
 		AddMV(&PureCoincedence,&_PureCoincedence,k,MV);
-	}
+	}*/
 
 	//7 vfz 2024 продолжить здесь!!!
 	if(TOFComponents.size()==p.TOFComponents.size())
