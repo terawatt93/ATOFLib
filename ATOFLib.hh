@@ -85,6 +85,8 @@ class TOFWindow:public TNamed
 };
 
 void MoveTH2F(TH2F *f1,double Mv);
+TH2F CutTH2(TH2F *f1,double x1,double x2,double y1,double y2);
+
 
 class ATOFProcess:public TNamed
 {

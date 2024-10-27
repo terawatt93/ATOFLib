@@ -1254,6 +1254,57 @@ void AddMV(TH2F *f1, TH2F *f2, double k ,double Mv)
 	}
 }
 
+TH2F CutTH2(TH2F *h1,double x1,double x2,double y1,double y2)
+{
+	int x1Bin=h1->GetXaxis()->FindBin(x1);
+	int x2Bin=h1->GetXaxis()->FindBin(x2);
+	int y1Bin=h1->GetYaxis()->FindBin(y1);
+	int y2Bin=h1->GetYaxis()->FindBin(y2);
+	
+	if(x1Bin==0)
+	{
+		x1Bin=1;
+	}
+	if(x2Bin==h1->GetNbinsX())
+	{
+		x2Bin=h1->GetNbinsX()-1;
+	}
+	if(y1Bin==0)
+	{
+		y1Bin=1;
+	}
+	if(y2Bin==h1->GetNbinsY())
+	{
+		y2Bin=h1->GetNbinsY()-1;
+	}
+	double BinWidthX=h1->GetXaxis()->GetBinWidth(1);
+	double BinWidthY=h1->GetYaxis()->GetBinWidth(1);
+	
+	x1=h1->GetXaxis()->GetBinCenter(x1Bin)-BinWidthX*0.5;
+	x2=h1->GetXaxis()->GetBinCenter(x2Bin)+BinWidthX*0.5;
+	
+	y1=h1->GetYaxis()->GetBinCenter(y1Bin)-BinWidthY*0.5;
+	y2=h1->GetYaxis()->GetBinCenter(y2Bin)+BinWidthY*0.5;
+	
+	int NX=x2Bin-x1Bin+1;
+	int NY=y2Bin-y1Bin+1;
+	
+	TH2F result(TString(h1->GetName())+"_cut",TString(h1->GetTitle())+"_cut",NX,x1,x2,NY,y1,y2);
+	int x_iter=1;
+	for(int i=x1Bin;i<=x2Bin;i++)
+	{
+		int y_iter=1;
+		for(int j=y1Bin;j<=y2Bin;j++)
+		{
+			result.SetBinContent(x_iter,y_iter,h1->GetBinContent(i,j));
+			result.SetBinError(x_iter,y_iter,h1->GetBinError(i,j));
+			y_iter++;
+		}
+		x_iter++;
+	}
+	return result;
+}
+
 void ATOFProcess::Add(ATOFProcess &p,double k,double MV)
 {
 	TH2F _FullSpectrum, _Anticoincedence, _Coincedence, _PureCoincedence;

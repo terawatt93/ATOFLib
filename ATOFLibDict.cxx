@@ -119,7 +119,7 @@ namespace ROOT {
       ::ATOFProcess *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ATOFProcess >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 89,
+         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 91,
                   typeid(::ATOFProcess), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ATOFProcess::Dictionary, isa_proxy, 4,
                   sizeof(::ATOFProcess) );
@@ -150,7 +150,7 @@ namespace ROOT {
       ::GUIclass *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::GUIclass >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 134,
+         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 136,
                   typeid(::GUIclass), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::GUIclass::Dictionary, isa_proxy, 16,
                   sizeof(::GUIclass) );
@@ -459,7 +459,7 @@ namespace ROOT {
       instance.SetDestructor(&destruct_vectorlEdoublegR);
       instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<double> >()));
 
-      instance.AdoptAlternate(::ROOT::AddClassAlternate("vector<double>","std::vector<double, std::allocator<double> >"));
+      ::ROOT::AddClassAlternate("vector<double>","std::vector<double, std::allocator<double> >");
       return &instance;
    }
    // Static variable to force the class initialization
@@ -480,10 +480,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlEdoublegR(void *p) {
-      return  p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<double> : new vector<double>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<double> : new vector<double>;
    }
    static void *newArray_vectorlEdoublegR(Long_t nElements, void *p) {
-      return p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<double>[nElements] : new vector<double>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<double>[nElements] : new vector<double>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlEdoublegR(void *p) {
@@ -524,7 +524,7 @@ namespace ROOT {
       instance.SetDestructor(&destruct_vectorlETOFWindowgR);
       instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<TOFWindow> >()));
 
-      instance.AdoptAlternate(::ROOT::AddClassAlternate("vector<TOFWindow>","std::vector<TOFWindow, std::allocator<TOFWindow> >"));
+      ::ROOT::AddClassAlternate("vector<TOFWindow>","std::vector<TOFWindow, std::allocator<TOFWindow> >");
       return &instance;
    }
    // Static variable to force the class initialization
@@ -545,10 +545,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlETOFWindowgR(void *p) {
-      return  p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TOFWindow> : new vector<TOFWindow>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TOFWindow> : new vector<TOFWindow>;
    }
    static void *newArray_vectorlETOFWindowgR(Long_t nElements, void *p) {
-      return p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TOFWindow>[nElements] : new vector<TOFWindow>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TOFWindow>[nElements] : new vector<TOFWindow>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlETOFWindowgR(void *p) {
@@ -589,7 +589,7 @@ namespace ROOT {
       instance.SetDestructor(&destruct_vectorlETOFComponentgR);
       instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<TOFComponent> >()));
 
-      instance.AdoptAlternate(::ROOT::AddClassAlternate("vector<TOFComponent>","std::vector<TOFComponent, std::allocator<TOFComponent> >"));
+      ::ROOT::AddClassAlternate("vector<TOFComponent>","std::vector<TOFComponent, std::allocator<TOFComponent> >");
       return &instance;
    }
    // Static variable to force the class initialization
@@ -610,10 +610,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlETOFComponentgR(void *p) {
-      return  p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TOFComponent> : new vector<TOFComponent>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TOFComponent> : new vector<TOFComponent>;
    }
    static void *newArray_vectorlETOFComponentgR(Long_t nElements, void *p) {
-      return p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TOFComponent>[nElements] : new vector<TOFComponent>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TOFComponent>[nElements] : new vector<TOFComponent>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlETOFComponentgR(void *p) {
