@@ -20,15 +20,31 @@
 #include <sstream>
 //#include <TGCheckButton.h>
 #pragma once
-#define VERSION 8
+#define VERSION 9
 using namespace std;
 
 class GUIclass;
 
 class ATOFProcess;
+class TOFComponent;
 
 #include "TalysLib.hh"
 
+void LinearRegression(vector<double> *x, vector<double> *y, vector<double> *x_err, vector<double> *y_err,vector<double> &result);
+
+class ReferenceGammaPeak:public TNamed
+{
+	public:
+	double XMin=0,XMax=0,PeakMin=0,PeakMax=0,Energy=0;
+	int Averaging=4;
+	TH2F FullHist,SubstrateHist,PeakHist;
+	TH1D FullX,FullY,SubstrateX,SubstrateY,PeakX,PeakY;
+	void GenerateSubstrateHistogram();
+	TOFComponent* fComponent=0;//!
+	ATOFProcess* fProcess=0;//!
+	bool Use2Dhist=false;
+	ClassDef(ReferenceGammaPeak,VERSION);
+}
 
 class TOFComponent:public TNamed
 {

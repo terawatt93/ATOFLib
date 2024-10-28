@@ -5,6 +5,204 @@
 #include <TSpectrum.h>
 #pragma once
 
+void LinearRegression(vector<double> *x, vector<double> *y, vector<double> *x_err, vector<double> *y_err,vector<double> &result)
+{
+	//Митин, формула над формулой 44
+	double sum1=0;  // \sum\limits_{i=0}^n x_i^2/\sigma_i^2
+	double sum5=0; // \sum\limits_{i=0}^n x_i/\sigma_i^2
+	double sum2=0; // \sum\limits_{i=0}^n 1/\sigma_i^2
+	double sum3=0; // \sum\limits_{i=0}^n x_i*y_i/\sigma_i^2
+	double sum4=0; // \sum\limits_{i=0}^n y_i/\sigma_i^2
+	for(unsigned int i=0;i<x->size();i++)
+	{
+		double Error=0;
+		if(x_err!=0)
+		{
+			Error+=pow(x_err->at(i),2);
+		}
+		if(y_err!=0)
+		{
+			Error+=pow(y_err->at(i),2);
+		}
+		if(Error==0)
+		{
+			Error=1;
+		}
+		sum2+=1/Error;
+		sum1+=pow(x->at(i),2)/Error;
+		sum5+=x->at(i)/Error;
+		sum3+=x->at(i)*y->at(i)/Error;
+		sum4+=y->at(i)/Error;
+	}
+	double Delta=sum1*sum2-pow(sum5,2);
+	double Delta_a=sum3*sum2-sum5*sum4;
+	double Delta_b=sum1*sum4-sum5*sum3;
+	//cout<<"Delta="<<Delta<<"\n";
+	result.resize(4);
+	result[1]=Delta_a/Delta;//a
+	result[0]=Delta_b/Delta;//b
+	result[3]=sum2/Delta;//a
+	result[2]=sum1/Delta;//b
+
+}
+
+void ReferenceGammaPeak::GenerateSubstrateHistogram()
+{
+	if(!fProcess)
+	{
+		cout<<"This is ReferenceGammaPeak::GenerateSubstrateHistogram(): cannot generate histograms because of invalid pointer to ATOFProcess* fProcess. Returned!\n";
+		return;
+	}
+	TH2F *h_full=&(fProcess->PureCoincedence);
+	
+	int x1Bin=h_full->GetXaxis()->FindBin(XMin);
+	int x2Bin=h_full->GetXaxis()->FindBin(XMax);
+	
+	int x1BinPeak=h_full->GetXaxis()->FindBin(PeakMin);
+	int x2BinPeak=h_full->GetXaxis()->FindBin(PeakMax);
+	
+	int NBinsX=h_full->GetNbinsX();
+	int NBinsY=h_full->GetNbinsY();
+	double BinWidthY=h_full->GetYaxis()->GetBinCenter(1);
+	double BinWidthX=h_full->GetXaxis()->GetBinCenter(1);
+	
+	FullY=*(h_full->ProjectionY());  SubstrateY=*(h_full->ProjectionY());  PeakY=*(h_full->ProjectionY());
+	TString OneDimName(h_full->GetName());
+	
+	
+	FullX=TH1D(OneDimName+"_full_px",OneDimName+"_full_px",x2Bin-x1Bin+1,h_full->GetXaxis()->GetBinCenter(x1Bin)-0.5*BinWidthX,h_full->GetXaxis()->GetBinCenter(x2Bin)+0.5*BinWidthX);
+	
+	
+	SubstrateX=FullX; PeakX=FullX;
+	
+	OneDimName.ReplaceAll("_pure","_peak_%d");
+	OneDimName=TString::Format(OneDimName,(int)(Energy*10));
+	
+	FullX.SetName(OneDimName+"_full_px");
+	FullY.SetName(OneDimName+"_full_py");
+	SubstrateX.SetName(OneDimName+"_substrate_px");
+	SubstrateY.SetName(OneDimName+"_substrate_py");
+	PeakX.SetName(OneDimName+"_peak_px");
+	PeakY.SetName(OneDimName+"_peak_py");
+	
+	PeakX.Reset();
+	PeakY.Reset();
+	
+	SubstrateX.Reset();
+	SubstrateY.Reset();
+	
+	
+	if(Use2Dhist)
+	{
+		FullHist=CutTH2(h_full,XMin,XMax,h_full->GetYaxis()->GetBinCenter(1)-BinWidthY,h_full->GetYaxis()->GetBinCenter(NBinsY)+BinWidthY);
+		TString HistName(h_full->GetName());
+		HistName.ReplaceAll("_pure","_peak_%d");
+		HistName=TString::Format(HistName,(int)(Energy*10));
+		FullHist.SetName(HistName);
+		
+		SubstrateHist=FullHist;
+		SubstrateHist.SetName(HistName+"_substrate");
+		PeakHist=FullHist;
+		PeakHist.SetName(HistName+"_peak");
+	}
+	for(int i=1;i<NBinsY+1;i++)
+	{
+		vector<double> x_val,y_val,y_err;
+		double BinCenterY=h_full->GetYaxis()->GetBinCenter(i);
+		for(int j=x1Bin;j<x2Bin;j++)
+		{
+			if(j>=x1BinPeak && j<=x2BinPeak)
+			{
+				continue;
+			}
+			double BinCenterX=h_full->GetXaxis()->GetBinCenter(j);
+			double Y=0,Y_err=0;
+			if(Averaging>0)
+			{
+				int left=i-Averaging/2;
+				int right=i+Averaging/2;
+				int Count=0;
+				if(left<1)
+				{
+					left=1;
+				}
+				if(right>NBinsY)
+				{
+					right=NBinsY;
+				}
+				for(int p=left;p<=right;p++)
+				{
+					Y+=h_full->GetBinContent(j,p);
+					Y_err+=pow(h_full->GetBinError(j,p),2);
+					Count++;
+				}
+				Y=Y/Count;
+				Y_err=sqrt(Y_err)/sqrt(Count);
+			}
+			else
+			{
+				Y=h_full->GetBinContent(j,i);
+				Y_err=h_full->GetBinError(j,i);
+			}
+			
+			x_val.push_back(h_full->GetXaxis()->GetBinCenter(j));
+			y_val.push_back(Y);
+			y_err.push_back(Y_err);
+			if(Use2Dhist)
+			{
+				PeakHist.SetBinContent(j-x1Bin+1,i,0);
+				PeakHist.SetBinError(j-x1Bin+1,i,0);
+				SubstrateHist.SetBinContent(j-x1Bin+1,i,h_full->GetBinContent(j,i));
+				SubstrateHist.SetBinContent(j-x1Bin+1,i,h_full->GetBinError(j,i));
+			}
+			int XBin=FullX.GetXaxis()->FindBin(BinCenterX);
+			int YBin=FullY.GetXaxis()->FindBin(BinCenterY);
+			FullX.SetBinContent(XBin,FullX.GetBinContent(XBin)+h_full->GetBinContent(j,i));
+			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinError(XBin)+h_full->GetBinContent(j,i));
+			FullY.SetBinContent(XBin,FullX.GetBinContent(YBin)+h_full->GetBinContent(j,i));
+			SubstrateY.SetBinContent(XBin,FullX.SubstrateY(YBin)+h_full->GetBinContent(j,i));
+			
+			FullX.SetBinError(XBin,FullX.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
+			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
+			FullY.SetBinContent(XBin,FullY.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
+			SubstrateY.SetBinContent(XBin,SubstrateY.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
+			
+			//PeakX.SetBinContent(j-x1Bin+1,h_full->GetBinContent(j,i)+PeakX.GetBinContent(j-x1Bin+1));
+			//PeakY
+		}
+		vector<double> result;
+		LinearRegression(&x_val,&y_val,0,&y_err,result);
+		for(int j=x1BinPeak;j<=x2BinPeak;j++)
+		{
+			double x=h_full->GetXaxis()->GetBinCenter(j);
+			double y=h_full->GetBinContent(j,i)-(result[0]+h_full.GetXaxis()->GetBinCenter(j)*result[1]);
+			
+			int XBin=FullX.GetXaxis()->FindBin(x);
+			int YBin=FullY.GetXaxis()->FindBin(BinCenterY);
+			
+			double Error=h_full.GetBinError(j,i);
+			if(Use2Dhist)
+			{
+				
+				PeakHist.SetBinContent(BinX,i,h_full->GetBinContent(j,i));
+				PeakHist.SetBinError(BinX,i,h_full->GetBinError(j,i));
+				SubstrateHist.SetBinContent(BinX,i,y);
+				SubstrateHist.SetBinError(BinX,i,Error);
+			}
+			
+			FullX.SetBinContent(XBin,FullX.GetBinContent(XBin)+h_full->GetBinContent(j,i));
+			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinError(XBin)+y);
+			FullY.SetBinContent(XBin,FullX.GetBinContent(YBin)+h_full->GetBinContent(j,i));
+			SubstrateY.SetBinContent(XBin,FullX.SubstrateY(YBin)+y);
+			
+			FullX.SetBinError(XBin,FullX.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
+			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinError(XBin)+pow(Error,2));
+			FullY.SetBinContent(XBin,FullY.GetBinError(XBin)+pow(Error,2));
+			SubstrateY.SetBinContent(XBin,SubstrateY.GetBinError(XBin)+pow(Error,2));
+		}
+	}
+}
+
 void LinearRegression(vector<Float_t> *xData, vector<Float_t> *sData,int indexMin, int indexMax,double &a, double &b)
 {
 	//cout<<"indexMin indexMax:"<<indexMin<<" "<<indexMax<<"\n";
