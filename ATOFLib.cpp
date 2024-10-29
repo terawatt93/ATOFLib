@@ -54,6 +54,7 @@ void ReferenceGammaPeak::GenerateSubstrateHistogram()
 		return;
 	}
 	TH2F *h_full=&(fProcess->PureCoincedence);
+	cout<<"1:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
 	
 	int x1Bin=h_full->GetXaxis()->FindBin(XMin);
 	int x2Bin=h_full->GetXaxis()->FindBin(XMax);
@@ -63,8 +64,10 @@ void ReferenceGammaPeak::GenerateSubstrateHistogram()
 	
 	int NBinsX=h_full->GetNbinsX();
 	int NBinsY=h_full->GetNbinsY();
-	double BinWidthY=h_full->GetYaxis()->GetBinCenter(1);
-	double BinWidthX=h_full->GetXaxis()->GetBinCenter(1);
+	double BinWidthY=h_full->GetYaxis()->GetBinWidth(1);
+	double BinWidthX=h_full->GetXaxis()->GetBinWidth(1);
+	
+	cout<<"2:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
 	
 	FullY=*(h_full->ProjectionY());  SubstrateY=*(h_full->ProjectionY());  PeakY=*(h_full->ProjectionY());
 	TString OneDimName(h_full->GetName());
@@ -72,7 +75,7 @@ void ReferenceGammaPeak::GenerateSubstrateHistogram()
 	
 	FullX=TH1D(OneDimName+"_full_px",OneDimName+"_full_px",x2Bin-x1Bin+1,h_full->GetXaxis()->GetBinCenter(x1Bin)-0.5*BinWidthX,h_full->GetXaxis()->GetBinCenter(x2Bin)+0.5*BinWidthX);
 	
-	
+	cout<<"3:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
 	SubstrateX=FullX; PeakX=FullX;
 	
 	OneDimName.ReplaceAll("_pure","_peak_%d");
@@ -90,11 +93,13 @@ void ReferenceGammaPeak::GenerateSubstrateHistogram()
 	
 	SubstrateX.Reset();
 	SubstrateY.Reset();
-	
+	cout<<"4:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
 	
 	if(Use2Dhist)
 	{
-		FullHist=CutTH2(h_full,XMin,XMax,h_full->GetYaxis()->GetBinCenter(1)-BinWidthY,h_full->GetYaxis()->GetBinCenter(NBinsY)+BinWidthY);
+		cout<<"5:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
+		cout<<"FullHist: "<<XMin<<" "<<XMax<<" "<<h_full->GetYaxis()->GetBinCenter(1)-BinWidthY<<" "<<h_full->GetYaxis()->GetBinCenter(NBinsY+1)+BinWidthY<<"\n";
+		FullHist=CutTH2(h_full,XMin,XMax,h_full->GetYaxis()->GetBinCenter(1)-BinWidthY,h_full->GetYaxis()->GetBinCenter(NBinsY+1)+BinWidthY);
 		TString HistName(h_full->GetName());
 		HistName.ReplaceAll("_pure","_peak_%d");
 		HistName=TString::Format(HistName,(int)(Energy*10));
@@ -153,53 +158,73 @@ void ReferenceGammaPeak::GenerateSubstrateHistogram()
 				PeakHist.SetBinContent(j-x1Bin+1,i,0);
 				PeakHist.SetBinError(j-x1Bin+1,i,0);
 				SubstrateHist.SetBinContent(j-x1Bin+1,i,h_full->GetBinContent(j,i));
-				SubstrateHist.SetBinContent(j-x1Bin+1,i,h_full->GetBinError(j,i));
+				SubstrateHist.SetBinError(j-x1Bin+1,i,h_full->GetBinError(j,i));
 			}
 			int XBin=FullX.GetXaxis()->FindBin(BinCenterX);
 			int YBin=FullY.GetXaxis()->FindBin(BinCenterY);
 			FullX.SetBinContent(XBin,FullX.GetBinContent(XBin)+h_full->GetBinContent(j,i));
-			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinError(XBin)+h_full->GetBinContent(j,i));
-			FullY.SetBinContent(XBin,FullX.GetBinContent(YBin)+h_full->GetBinContent(j,i));
-			SubstrateY.SetBinContent(XBin,FullX.SubstrateY(YBin)+h_full->GetBinContent(j,i));
+			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinContent(XBin)+h_full->GetBinContent(j,i));
+			FullY.SetBinContent(YBin,FullY.GetBinContent(YBin)+h_full->GetBinContent(j,i));
+			SubstrateY.SetBinContent(YBin,SubstrateY.GetBinContent(YBin)+h_full->GetBinContent(j,i));
 			
 			FullX.SetBinError(XBin,FullX.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
-			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
-			FullY.SetBinContent(XBin,FullY.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
-			SubstrateY.SetBinContent(XBin,SubstrateY.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
+			SubstrateX.SetBinError(XBin,SubstrateX.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
+			FullY.SetBinError(YBin,FullY.GetBinError(YBin)+pow(h_full->GetBinError(j,i),2));
+			SubstrateY.SetBinError(YBin,SubstrateY.GetBinError(YBin)+pow(h_full->GetBinError(j,i),2));
 			
 			//PeakX.SetBinContent(j-x1Bin+1,h_full->GetBinContent(j,i)+PeakX.GetBinContent(j-x1Bin+1));
 			//PeakY
 		}
+		//cout<<"x1BinPeak: "<<x1BinPeak<<" x2BinPeak: "<<x2BinPeak<<"\n";
 		vector<double> result;
 		LinearRegression(&x_val,&y_val,0,&y_err,result);
 		for(int j=x1BinPeak;j<=x2BinPeak;j++)
 		{
 			double x=h_full->GetXaxis()->GetBinCenter(j);
-			double y=h_full->GetBinContent(j,i)-(result[0]+h_full.GetXaxis()->GetBinCenter(j)*result[1]);
+			double y_substrate=result[0]+h_full->GetXaxis()->GetBinCenter(j)*result[1];
+			double y=h_full->GetBinContent(j,i)-y_substrate;
+			
 			
 			int XBin=FullX.GetXaxis()->FindBin(x);
 			int YBin=FullY.GetXaxis()->FindBin(BinCenterY);
 			
-			double Error=h_full.GetBinError(j,i);
+			double Error=h_full->GetBinError(j,i);
 			if(Use2Dhist)
 			{
 				
-				PeakHist.SetBinContent(BinX,i,h_full->GetBinContent(j,i));
-				PeakHist.SetBinError(BinX,i,h_full->GetBinError(j,i));
-				SubstrateHist.SetBinContent(BinX,i,y);
-				SubstrateHist.SetBinError(BinX,i,Error);
+				PeakHist.SetBinContent(XBin,i,y);
+				PeakHist.SetBinError(XBin,i,h_full->GetBinError(j,i));
+				SubstrateHist.SetBinContent(XBin,i,y_substrate);
+				SubstrateHist.SetBinError(XBin,i,Error);
 			}
 			
 			FullX.SetBinContent(XBin,FullX.GetBinContent(XBin)+h_full->GetBinContent(j,i));
-			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinError(XBin)+y);
-			FullY.SetBinContent(XBin,FullX.GetBinContent(YBin)+h_full->GetBinContent(j,i));
-			SubstrateY.SetBinContent(XBin,FullX.SubstrateY(YBin)+y);
+			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinContent(XBin)+y_substrate);
+			FullY.SetBinContent(YBin,FullY.GetBinContent(YBin)+h_full->GetBinContent(j,i));
+			SubstrateY.SetBinContent(YBin,SubstrateY.GetBinContent(YBin)+y_substrate);
+			PeakX.SetBinContent(XBin,PeakX.GetBinContent(XBin)+y);
+			PeakY.SetBinContent(YBin,PeakY.GetBinContent(YBin)+y);
+			
 			
 			FullX.SetBinError(XBin,FullX.GetBinError(XBin)+pow(h_full->GetBinError(j,i),2));
-			SubstrateX.SetBinContent(XBin,SubstrateX.GetBinError(XBin)+pow(Error,2));
-			FullY.SetBinContent(XBin,FullY.GetBinError(XBin)+pow(Error,2));
-			SubstrateY.SetBinContent(XBin,SubstrateY.GetBinError(XBin)+pow(Error,2));
+			SubstrateX.SetBinError(XBin,SubstrateX.GetBinError(XBin)+pow(Error,2));
+			FullY.SetBinError(YBin,FullY.GetBinError(YBin)+pow(Error,2));
+			SubstrateY.SetBinError(YBin,SubstrateY.GetBinError(YBin)+pow(Error,2));
+			PeakX.SetBinError(XBin,PeakX.GetBinError(XBin)+pow(Error,2));
+			PeakY.SetBinError(YBin,PeakY.GetBinError(YBin)+pow(Error,2));
 		}
+	}
+	for(int i=1;i<=FullX.GetNbinsX();i++)
+	{
+		FullX.SetBinError(i,sqrt(FullX.GetBinError(i)));
+		SubstrateX.SetBinError(i,sqrt(SubstrateX.GetBinError(i)));
+		PeakX.SetBinError(i,sqrt(PeakX.GetBinError(i)));
+	}
+	for(int i=1;i<=FullY.GetNbinsX();i++)
+	{
+		FullY.SetBinError(i,sqrt(FullY.GetBinError(i)));
+		SubstrateY.SetBinError(i,sqrt(SubstrateY.GetBinError(i)));
+		PeakY.SetBinError(i,sqrt(PeakY.GetBinError(i)));
 	}
 }
 

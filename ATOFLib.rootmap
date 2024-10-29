@@ -2,6 +2,7 @@
 # List of selected classes
 class ATOFProcess
 class GUIclass
+class ReferenceGammaPeak
 class TOFComponent
 class TOFWindow
 header ATOFLib.hh

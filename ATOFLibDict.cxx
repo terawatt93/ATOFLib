@@ -43,6 +43,38 @@
 namespace std {} using namespace std;
 
 namespace ROOT {
+   static void *new_ReferenceGammaPeak(void *p = nullptr);
+   static void *newArray_ReferenceGammaPeak(Long_t size, void *p);
+   static void delete_ReferenceGammaPeak(void *p);
+   static void deleteArray_ReferenceGammaPeak(void *p);
+   static void destruct_ReferenceGammaPeak(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::ReferenceGammaPeak*)
+   {
+      ::ReferenceGammaPeak *ptr = nullptr;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ReferenceGammaPeak >(nullptr);
+      static ::ROOT::TGenericClassInfo 
+         instance("ReferenceGammaPeak", ::ReferenceGammaPeak::Class_Version(), "ATOFLib.hh", 35,
+                  typeid(::ReferenceGammaPeak), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &::ReferenceGammaPeak::Dictionary, isa_proxy, 4,
+                  sizeof(::ReferenceGammaPeak) );
+      instance.SetNew(&new_ReferenceGammaPeak);
+      instance.SetNewArray(&newArray_ReferenceGammaPeak);
+      instance.SetDelete(&delete_ReferenceGammaPeak);
+      instance.SetDeleteArray(&deleteArray_ReferenceGammaPeak);
+      instance.SetDestructor(&destruct_ReferenceGammaPeak);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::ReferenceGammaPeak*)
+   {
+      return GenerateInitInstanceLocal(static_cast<::ReferenceGammaPeak*>(nullptr));
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal(static_cast<const ::ReferenceGammaPeak*>(nullptr)); R__UseDummy(_R__UNIQUE_DICT_(Init));
+} // end of namespace ROOT
+
+namespace ROOT {
    static void *new_TOFComponent(void *p = nullptr);
    static void *newArray_TOFComponent(Long_t size, void *p);
    static void delete_TOFComponent(void *p);
@@ -55,7 +87,7 @@ namespace ROOT {
       ::TOFComponent *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TOFComponent >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("TOFComponent", ::TOFComponent::Class_Version(), "ATOFLib.hh", 33,
+         instance("TOFComponent", ::TOFComponent::Class_Version(), "ATOFLib.hh", 49,
                   typeid(::TOFComponent), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TOFComponent::Dictionary, isa_proxy, 4,
                   sizeof(::TOFComponent) );
@@ -87,7 +119,7 @@ namespace ROOT {
       ::TOFWindow *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TOFWindow >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 59,
+         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 75,
                   typeid(::TOFWindow), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TOFWindow::Dictionary, isa_proxy, 4,
                   sizeof(::TOFWindow) );
@@ -119,7 +151,7 @@ namespace ROOT {
       ::ATOFProcess *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ATOFProcess >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 91,
+         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 107,
                   typeid(::ATOFProcess), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ATOFProcess::Dictionary, isa_proxy, 4,
                   sizeof(::ATOFProcess) );
@@ -150,7 +182,7 @@ namespace ROOT {
       ::GUIclass *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::GUIclass >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 136,
+         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 152,
                   typeid(::GUIclass), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::GUIclass::Dictionary, isa_proxy, 16,
                   sizeof(::GUIclass) );
@@ -167,6 +199,41 @@ namespace ROOT {
    // Static variable to force the class initialization
    static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal(static_cast<const ::GUIclass*>(nullptr)); R__UseDummy(_R__UNIQUE_DICT_(Init));
 } // end of namespace ROOT
+
+//______________________________________________________________________________
+atomic_TClass_ptr ReferenceGammaPeak::fgIsA(nullptr);  // static to hold class pointer
+
+//______________________________________________________________________________
+const char *ReferenceGammaPeak::Class_Name()
+{
+   return "ReferenceGammaPeak";
+}
+
+//______________________________________________________________________________
+const char *ReferenceGammaPeak::ImplFileName()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::ReferenceGammaPeak*)nullptr)->GetImplFileName();
+}
+
+//______________________________________________________________________________
+int ReferenceGammaPeak::ImplFileLine()
+{
+   return ::ROOT::GenerateInitInstanceLocal((const ::ReferenceGammaPeak*)nullptr)->GetImplFileLine();
+}
+
+//______________________________________________________________________________
+TClass *ReferenceGammaPeak::Dictionary()
+{
+   fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::ReferenceGammaPeak*)nullptr)->GetClass();
+   return fgIsA;
+}
+
+//______________________________________________________________________________
+TClass *ReferenceGammaPeak::Class()
+{
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::ReferenceGammaPeak*)nullptr)->GetClass(); }
+   return fgIsA;
+}
 
 //______________________________________________________________________________
 atomic_TClass_ptr TOFComponent::fgIsA(nullptr);  // static to hold class pointer
@@ -307,6 +374,39 @@ TClass *GUIclass::Class()
    if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::GUIclass*)nullptr)->GetClass(); }
    return fgIsA;
 }
+
+//______________________________________________________________________________
+void ReferenceGammaPeak::Streamer(TBuffer &R__b)
+{
+   // Stream an object of class ReferenceGammaPeak.
+
+   if (R__b.IsReading()) {
+      R__b.ReadClassBuffer(ReferenceGammaPeak::Class(),this);
+   } else {
+      R__b.WriteClassBuffer(ReferenceGammaPeak::Class(),this);
+   }
+}
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_ReferenceGammaPeak(void *p) {
+      return  p ? new(p) ::ReferenceGammaPeak : new ::ReferenceGammaPeak;
+   }
+   static void *newArray_ReferenceGammaPeak(Long_t nElements, void *p) {
+      return p ? new(p) ::ReferenceGammaPeak[nElements] : new ::ReferenceGammaPeak[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_ReferenceGammaPeak(void *p) {
+      delete (static_cast<::ReferenceGammaPeak*>(p));
+   }
+   static void deleteArray_ReferenceGammaPeak(void *p) {
+      delete [] (static_cast<::ReferenceGammaPeak*>(p));
+   }
+   static void destruct_ReferenceGammaPeak(void *p) {
+      typedef ::ReferenceGammaPeak current_t;
+      (static_cast<current_t*>(p))->~current_t();
+   }
+} // end of namespace ROOT for class ::ReferenceGammaPeak
 
 //______________________________________________________________________________
 void TOFComponent::Streamer(TBuffer &R__b)
@@ -459,7 +559,7 @@ namespace ROOT {
       instance.SetDestructor(&destruct_vectorlEdoublegR);
       instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<double> >()));
 
-      ::ROOT::AddClassAlternate("vector<double>","std::vector<double, std::allocator<double> >");
+      instance.AdoptAlternate(::ROOT::AddClassAlternate("vector<double>","std::vector<double, std::allocator<double> >"));
       return &instance;
    }
    // Static variable to force the class initialization
@@ -480,10 +580,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlEdoublegR(void *p) {
-      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<double> : new vector<double>;
+      return  p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<double> : new vector<double>;
    }
    static void *newArray_vectorlEdoublegR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<double>[nElements] : new vector<double>[nElements];
+      return p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<double>[nElements] : new vector<double>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlEdoublegR(void *p) {
@@ -524,7 +624,7 @@ namespace ROOT {
       instance.SetDestructor(&destruct_vectorlETOFWindowgR);
       instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<TOFWindow> >()));
 
-      ::ROOT::AddClassAlternate("vector<TOFWindow>","std::vector<TOFWindow, std::allocator<TOFWindow> >");
+      instance.AdoptAlternate(::ROOT::AddClassAlternate("vector<TOFWindow>","std::vector<TOFWindow, std::allocator<TOFWindow> >"));
       return &instance;
    }
    // Static variable to force the class initialization
@@ -545,10 +645,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlETOFWindowgR(void *p) {
-      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TOFWindow> : new vector<TOFWindow>;
+      return  p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TOFWindow> : new vector<TOFWindow>;
    }
    static void *newArray_vectorlETOFWindowgR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TOFWindow>[nElements] : new vector<TOFWindow>[nElements];
+      return p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TOFWindow>[nElements] : new vector<TOFWindow>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlETOFWindowgR(void *p) {
@@ -589,7 +689,7 @@ namespace ROOT {
       instance.SetDestructor(&destruct_vectorlETOFComponentgR);
       instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<TOFComponent> >()));
 
-      ::ROOT::AddClassAlternate("vector<TOFComponent>","std::vector<TOFComponent, std::allocator<TOFComponent> >");
+      instance.AdoptAlternate(::ROOT::AddClassAlternate("vector<TOFComponent>","std::vector<TOFComponent, std::allocator<TOFComponent> >"));
       return &instance;
    }
    // Static variable to force the class initialization
@@ -610,10 +710,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlETOFComponentgR(void *p) {
-      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TOFComponent> : new vector<TOFComponent>;
+      return  p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TOFComponent> : new vector<TOFComponent>;
    }
    static void *newArray_vectorlETOFComponentgR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TOFComponent>[nElements] : new vector<TOFComponent>[nElements];
+      return p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TOFComponent>[nElements] : new vector<TOFComponent>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlETOFComponentgR(void *p) {
@@ -645,6 +745,7 @@ nullptr
 #pragma clang diagnostic ignored "-Wignored-attributes"
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 extern int __Cling_AutoLoading_Map;
+class __attribute__((annotate("$clingAutoload$ATOFLib.hh")))  ReferenceGammaPeak;
 class __attribute__((annotate("$clingAutoload$ATOFLib.hh")))  TOFComponent;
 class __attribute__((annotate("$clingAutoload$ATOFLib.hh")))  TOFWindow;
 class __attribute__((annotate("$clingAutoload$ATOFLib.hh")))  ATOFProcess;
@@ -663,6 +764,7 @@ class __attribute__((annotate("$clingAutoload$ATOFLib.hh")))  GUIclass;
     static const char* classesHeaders[] = {
 "ATOFProcess", payloadCode, "@",
 "GUIclass", payloadCode, "@",
+"ReferenceGammaPeak", payloadCode, "@",
 "TOFComponent", payloadCode, "@",
 "TOFWindow", payloadCode, "@",
 nullptr

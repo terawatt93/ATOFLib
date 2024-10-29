@@ -44,7 +44,7 @@ class ReferenceGammaPeak:public TNamed
 	ATOFProcess* fProcess=0;//!
 	bool Use2Dhist=false;
 	ClassDef(ReferenceGammaPeak,VERSION);
-}
+};
 
 class TOFComponent:public TNamed
 {
