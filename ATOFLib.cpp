@@ -388,6 +388,10 @@ ATOFProcess *FindBestMatch(ATOFProcess* current, vector<ATOFProcess> &ATOFP, boo
 	return 0;
 	
 }
+void TOFComponent::FitReferencePeaks(TFitFunction *fit)
+{
+	
+}
 
 void TOFComponent::FitTOFComponent(string Type)
 {
@@ -1413,6 +1417,25 @@ void ATOFProcess::RefitAutoFitted()
 
 	}
 
+}
+
+void ATOFProcess::AddReferencePeak(int CompNumber,double XMin, double XMax,double PeakMin,double PeakMax,double Energy)//метод, добавляющий опорный гамма-пик во временную компоненту
+{
+	cout<<"TOFComponents.size(): "<<TOFComponents.size()<<"\n";
+	if(TOFComponents.size()<=CompNumber)
+	{
+		TOFComponents.resize(CompNumber+1);
+	}
+	ReferenceGammaPeak RGP;
+	RGP.XMin=XMin;
+	RGP.XMax=XMax;
+	RGP.PeakMin=PeakMin;
+	RGP.PeakMax=PeakMax;
+	RGP.Energy=Energy;
+	RGP.fProcess=this;
+	//RGP.Use2Dhist=true;
+	RGP.GenerateSubstrateHistogram();
+	TOFComponents[CompNumber].ReferencePeaks.push_back(RGP);
 }
 
 void MoveTH2F(TH2F *f1,double Mv)

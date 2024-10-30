@@ -1,5 +1,6 @@
 
 #include "TGButton.h"
+#include "FitLib.hh"
 #include "TRootEmbeddedCanvas.h"
 #include "TGLayout.h"
 #include "TF1.h"
@@ -50,6 +51,8 @@ class TOFComponent:public TNamed
 {
 	public:
 	int CompNumber=0;
+	vector<ReferenceGammaPeak> ReferencePeaks;
+	void FitReferencePeaks(TFitFunction *fit);
 	TH1D SpectrumHist;
 	TH2F SpectrumHist2D;
 	TGraphErrors PeakPositionGraph, SigmaGraph, AmplitudeGraph;
@@ -118,6 +121,7 @@ class ATOFProcess:public TNamed
 	string DetType;
 	vector<TOFComponent> TOFComponents;
 	vector<TOFWindow> TOFWindows;
+	void AddReferencePeak(int CompNumber,double XMin, double XMax,double PeakMin,double PeakMax,double Energy);//метод, добавляющий опорный гамма-пик во временную компоненту
 	TOFWindow *CurrentWindow=0;
 	bool GeneratedAnti=false;
 	bool FittedTOF=false;

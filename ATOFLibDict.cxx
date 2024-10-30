@@ -55,7 +55,7 @@ namespace ROOT {
       ::ReferenceGammaPeak *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ReferenceGammaPeak >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("ReferenceGammaPeak", ::ReferenceGammaPeak::Class_Version(), "ATOFLib.hh", 35,
+         instance("ReferenceGammaPeak", ::ReferenceGammaPeak::Class_Version(), "ATOFLib.hh", 36,
                   typeid(::ReferenceGammaPeak), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ReferenceGammaPeak::Dictionary, isa_proxy, 4,
                   sizeof(::ReferenceGammaPeak) );
@@ -87,7 +87,7 @@ namespace ROOT {
       ::TOFComponent *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TOFComponent >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("TOFComponent", ::TOFComponent::Class_Version(), "ATOFLib.hh", 49,
+         instance("TOFComponent", ::TOFComponent::Class_Version(), "ATOFLib.hh", 50,
                   typeid(::TOFComponent), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TOFComponent::Dictionary, isa_proxy, 4,
                   sizeof(::TOFComponent) );
@@ -119,7 +119,7 @@ namespace ROOT {
       ::TOFWindow *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TOFWindow >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 75,
+         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 78,
                   typeid(::TOFWindow), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TOFWindow::Dictionary, isa_proxy, 4,
                   sizeof(::TOFWindow) );
@@ -151,7 +151,7 @@ namespace ROOT {
       ::ATOFProcess *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ATOFProcess >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 107,
+         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 110,
                   typeid(::ATOFProcess), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ATOFProcess::Dictionary, isa_proxy, 4,
                   sizeof(::ATOFProcess) );
@@ -182,7 +182,7 @@ namespace ROOT {
       ::GUIclass *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::GUIclass >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 152,
+         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 156,
                   typeid(::GUIclass), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::GUIclass::Dictionary, isa_proxy, 16,
                   sizeof(::GUIclass) );
@@ -727,6 +727,71 @@ namespace ROOT {
       (static_cast<current_t*>(p))->~current_t();
    }
 } // end of namespace ROOT for class vector<TOFComponent>
+
+namespace ROOT {
+   static TClass *vectorlEReferenceGammaPeakgR_Dictionary();
+   static void vectorlEReferenceGammaPeakgR_TClassManip(TClass*);
+   static void *new_vectorlEReferenceGammaPeakgR(void *p = nullptr);
+   static void *newArray_vectorlEReferenceGammaPeakgR(Long_t size, void *p);
+   static void delete_vectorlEReferenceGammaPeakgR(void *p);
+   static void deleteArray_vectorlEReferenceGammaPeakgR(void *p);
+   static void destruct_vectorlEReferenceGammaPeakgR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<ReferenceGammaPeak>*)
+   {
+      vector<ReferenceGammaPeak> *ptr = nullptr;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<ReferenceGammaPeak>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<ReferenceGammaPeak>", -2, "vector", 389,
+                  typeid(vector<ReferenceGammaPeak>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &vectorlEReferenceGammaPeakgR_Dictionary, isa_proxy, 0,
+                  sizeof(vector<ReferenceGammaPeak>) );
+      instance.SetNew(&new_vectorlEReferenceGammaPeakgR);
+      instance.SetNewArray(&newArray_vectorlEReferenceGammaPeakgR);
+      instance.SetDelete(&delete_vectorlEReferenceGammaPeakgR);
+      instance.SetDeleteArray(&deleteArray_vectorlEReferenceGammaPeakgR);
+      instance.SetDestructor(&destruct_vectorlEReferenceGammaPeakgR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<ReferenceGammaPeak> >()));
+
+      instance.AdoptAlternate(::ROOT::AddClassAlternate("vector<ReferenceGammaPeak>","std::vector<ReferenceGammaPeak, std::allocator<ReferenceGammaPeak> >"));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal(static_cast<const vector<ReferenceGammaPeak>*>(nullptr)); R__UseDummy(_R__UNIQUE_DICT_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlEReferenceGammaPeakgR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal(static_cast<const vector<ReferenceGammaPeak>*>(nullptr))->GetClass();
+      vectorlEReferenceGammaPeakgR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlEReferenceGammaPeakgR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlEReferenceGammaPeakgR(void *p) {
+      return  p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<ReferenceGammaPeak> : new vector<ReferenceGammaPeak>;
+   }
+   static void *newArray_vectorlEReferenceGammaPeakgR(Long_t nElements, void *p) {
+      return p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<ReferenceGammaPeak>[nElements] : new vector<ReferenceGammaPeak>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlEReferenceGammaPeakgR(void *p) {
+      delete (static_cast<vector<ReferenceGammaPeak>*>(p));
+   }
+   static void deleteArray_vectorlEReferenceGammaPeakgR(void *p) {
+      delete [] (static_cast<vector<ReferenceGammaPeak>*>(p));
+   }
+   static void destruct_vectorlEReferenceGammaPeakgR(void *p) {
+      typedef vector<ReferenceGammaPeak> current_t;
+      (static_cast<current_t*>(p))->~current_t();
+   }
+} // end of namespace ROOT for class vector<ReferenceGammaPeak>
 
 namespace {
   void TriggerDictionaryInitialization_ATOFLibDict_Impl() {
