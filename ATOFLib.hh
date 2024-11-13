@@ -112,7 +112,7 @@ class ATOFProcess:public TNamed
 	public:
 	TH2F FullSpectrum, Anticoincedence, Coincedence, PureCoincedence;
 	int ChannelAlpha=0, ChannelGamma=0;
-
+	bool Use2DhistForReferencePeaks=false;
 	bool UseFixedLimitsForSigma=false;//использовать фиксированные пределы для сигма на временных пиках
 	double MinTOFSigma=0,MaxTOFSigma=0;//пределы по сигма для временных спектров ()
 	bool GenerateTH2=false;

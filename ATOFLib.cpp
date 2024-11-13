@@ -1433,7 +1433,7 @@ void ATOFProcess::AddReferencePeak(int CompNumber,double XMin, double XMax,doubl
 	RGP.PeakMax=PeakMax;
 	RGP.Energy=Energy;
 	RGP.fProcess=this;
-	//RGP.Use2Dhist=true;
+	RGP.Use2Dhist=Use2DhistForReferencePeaks;
 	RGP.GenerateSubstrateHistogram();
 	TOFComponents[CompNumber].ReferencePeaks.push_back(RGP);
 }
