@@ -828,7 +828,7 @@ void TOFComponent::FillComponent()
 		if(fATOF->GenerateTH2)
 		{
 			Generate2d=true;
-			SpectrumHist2D=TH2F(fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d",CompNumber),fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d; E,keV; Count",CompNumber),fATOF->FullSpectrum.GetNbinsX(),fATOF->FullSpectrum.GetXaxis()->GetXmin(),fATOF->FullSpectrum.GetXaxis()->GetXmax(),100,-50,50);
+			SpectrumHist2D=TH2F(fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d2D",CompNumber),fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d; E,keV; Count",CompNumber),fATOF->FullSpectrum.GetNbinsX(),fATOF->FullSpectrum.GetXaxis()->GetXmin(),fATOF->FullSpectrum.GetXaxis()->GetXmax(),fATOF->PureCoincedence.GetNbinsY(),fATOF->PureCoincedence.GetYaxis()->GetXmin(),fATOF->PureCoincedence.GetYaxis()->GetXmax());
 		}
 	}
 	//SpectrumHist2D
@@ -836,16 +836,19 @@ void TOFComponent::FillComponent()
 	for(int i=1;i<fATOF->FullSpectrum.GetNbinsX()+1;i++)
 	{
 		double Pos=0;
+		double Sig=0;
 		double E=fATOF->FullSpectrum.GetXaxis()->GetBinCenter(i);
 		if(Fitted)
 		{
 			Pos=PeakPositions.Eval(E);
+			Sig=SigmaValues.Eval(E);
 		}
 		else
 		{
 			Pos=PeakPositionGraph.Eval(E);
+			SigmaGraph.Eval(E);
 		}
-		double Sig=SigmaGraph.Eval(E);
+		
 
 		if(fATOF)
 		{
