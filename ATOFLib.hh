@@ -36,6 +36,8 @@ void LinearRegression(vector<double> *x, vector<double> *y, vector<double> *x_er
 class ReferenceGammaPeak:public TNamed
 {
 	public:
+	ReferenceGammaPeak();
+	ReferenceGammaPeak(double _XMin,double _XMax,double _PeakMin,double _PeakMax,double _Energy,TH2F *_FullHist);
 	double XMin=0,XMax=0,PeakMin=0,PeakMax=0,Energy=0;
 	int Averaging=4;
 	TH2F FullHist,SubstrateHist,PeakHist;
@@ -56,12 +58,20 @@ class TOFComponent:public TNamed
 	TH1D SpectrumHist;
 	TH2F SpectrumHist2D;
 	TGraphErrors PeakPositionGraph, SigmaGraph, AmplitudeGraph;
-	TF1 PeakPositions, SigmaValues;
+	TF1 PeakPositions, SigmaValues, LeftBordersFit, RightBordersFit;
 	TGraphErrors LeftBorderGraph, RightBorderGraph;
 	double NSigmaLeft=2.5,NSigmaRight=2.5;//потом добавить поле для редактирования
 	ATOFProcess *fATOF=0;//!
 	bool Fitted=false;
-	void FillComponent();
+	void FillComponent(string AnalysisType="BordersFit");
+	/*
+	 * типы анализа для заполнения компонент. Варианты: BordersFit - границы описаны гладкими функциями, запоняется содержимое между ними
+	 * PeakSigmaFit - центроид и сигма описаны гладкими функциями, границы определяются как PeakPositions.Eval(E) - NSigmaLeft*SigmaValues.Eval(E),
+	 * PeakPositions.Eval(E) + NSigmaLeft*SigmaValues.Eval(E)
+	 * BordersGraph - границы описаны графиками, ширина окна  с энергией < TOFDependenceLeft и > TOFDependenceRight описывается константой
+	 * PeakSigmaGraph - центроид и сигма описаны графиками, границы определяются как PeakPositionGraph.Eval(E) - NSigmaLeft*SigmaValues.Eval(E),
+	 * PeakPositionGraph.Eval(E) + NSigmaLeft*SigmaValues.Eval(E)
+	 */
 	void SaveToRoot(TFile *f)
 	{
 		f->WriteTObject(&SpectrumHist);
@@ -79,8 +89,12 @@ class TOFWindow:public TNamed
 {
 	public:
 	TH1D TOFSpectrum;
-	TF1 FitFunction;//!
-	double LeftBorder=0, RightBorder=0;
+	TF1 FitFunction;
+	
+	vector<TF1> Components;
+	void FitWindow();
+	
+	double LeftBorder=0, RightBorder=0,Centroid = 0;
 	bool Fitted=false;
 	bool ManualFit=false;
 	double MinE=0, MaxE=0;
@@ -91,13 +105,14 @@ class TOFWindow:public TNamed
 	int WindowNumber=0;
 	void FindPeaksWithTSpectrum();
 	bool UseTSpectrum=false;
-	void Draw();
+	void Draw(Option_t * 	option="");
 	void BuildFitFunction();
 	void CreateFitFunction();
 	void GenerateNames();
 	void SaveToRoot(TFile *f);
 	void RemoveFunctionFromHist();
 	int FindTOFComponent(double PosValue, double &_diff_value);
+	void AttachFitFunction(TF1 *PrevFit);
 	void GetParametersFromTOFWindow(TOFWindow *w, bool UseTSpectrum=false);
 	void AddPointToCompGraphAuto();
 	ClassDef(TOFWindow,VERSION);
@@ -121,11 +136,18 @@ class ATOFProcess:public TNamed
 	string DetType;
 	vector<TOFComponent> TOFComponents;
 	vector<TOFWindow> TOFWindows;
-	void AddReferencePeak(int CompNumber,double XMin, double XMax,double PeakMin,double PeakMax,double Energy);//метод, добавляющий опорный гамма-пик во временную компоненту
+	void AddReferencePeak(double XMin, double XMax,double PeakMin,double PeakMax,double Energy,int CompNumber=-1);//метод, добавляющий опорный гамма-пик во временную компоненту
 	TOFWindow *CurrentWindow=0;
+	TOFComponent* GetOrCreateComponent(int CompNumber=0);
 	bool GeneratedAnti=false;
 	bool FittedTOF=false;
 	void GenerateTOFWindows(double WidthValue);
+	void GenerateTOFWindows(vector<vector<double> > *Windows,vector<vector<double> > *Escape=0);
+	void AttachFitFunction(TF1 *PrevFit);
+	
+	void (*SelectPeaksFCN)(TOFWindow *w,double ReferencePosition);
+	void GenerateComponents(double ReferencePosition=-1e9);//эта функция выполняет построение спектров в компонентах
+	
 	double AntiLeft,AntiRight,CoinLeft,CoinRight;
 	void GenerateAntiCoincedence(double LeftBorder,double RightBorder, double CoinLeftBorder,double CoinRightBorder,bool UseLinearRegression=false);
 	void DrawInGUI();

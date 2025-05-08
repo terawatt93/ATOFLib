@@ -87,7 +87,7 @@ namespace ROOT {
       ::TOFComponent *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TOFComponent >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("TOFComponent", ::TOFComponent::Class_Version(), "ATOFLib.hh", 50,
+         instance("TOFComponent", ::TOFComponent::Class_Version(), "ATOFLib.hh", 52,
                   typeid(::TOFComponent), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TOFComponent::Dictionary, isa_proxy, 4,
                   sizeof(::TOFComponent) );
@@ -119,7 +119,7 @@ namespace ROOT {
       ::TOFWindow *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TOFWindow >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 78,
+         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 88,
                   typeid(::TOFWindow), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TOFWindow::Dictionary, isa_proxy, 4,
                   sizeof(::TOFWindow) );
@@ -151,7 +151,7 @@ namespace ROOT {
       ::ATOFProcess *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ATOFProcess >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 110,
+         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 125,
                   typeid(::ATOFProcess), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ATOFProcess::Dictionary, isa_proxy, 4,
                   sizeof(::ATOFProcess) );
@@ -182,7 +182,7 @@ namespace ROOT {
       ::GUIclass *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::GUIclass >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 156,
+         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 177,
                   typeid(::GUIclass), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::GUIclass::Dictionary, isa_proxy, 16,
                   sizeof(::GUIclass) );
@@ -727,6 +727,71 @@ namespace ROOT {
       (static_cast<current_t*>(p))->~current_t();
    }
 } // end of namespace ROOT for class vector<TOFComponent>
+
+namespace ROOT {
+   static TClass *vectorlETF1gR_Dictionary();
+   static void vectorlETF1gR_TClassManip(TClass*);
+   static void *new_vectorlETF1gR(void *p = nullptr);
+   static void *newArray_vectorlETF1gR(Long_t size, void *p);
+   static void delete_vectorlETF1gR(void *p);
+   static void deleteArray_vectorlETF1gR(void *p);
+   static void destruct_vectorlETF1gR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<TF1>*)
+   {
+      vector<TF1> *ptr = nullptr;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<TF1>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<TF1>", -2, "vector", 389,
+                  typeid(vector<TF1>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &vectorlETF1gR_Dictionary, isa_proxy, 0,
+                  sizeof(vector<TF1>) );
+      instance.SetNew(&new_vectorlETF1gR);
+      instance.SetNewArray(&newArray_vectorlETF1gR);
+      instance.SetDelete(&delete_vectorlETF1gR);
+      instance.SetDeleteArray(&deleteArray_vectorlETF1gR);
+      instance.SetDestructor(&destruct_vectorlETF1gR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<TF1> >()));
+
+      instance.AdoptAlternate(::ROOT::AddClassAlternate("vector<TF1>","std::vector<TF1, std::allocator<TF1> >"));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_DICT_(Init) = GenerateInitInstanceLocal(static_cast<const vector<TF1>*>(nullptr)); R__UseDummy(_R__UNIQUE_DICT_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlETF1gR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal(static_cast<const vector<TF1>*>(nullptr))->GetClass();
+      vectorlETF1gR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlETF1gR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlETF1gR(void *p) {
+      return  p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TF1> : new vector<TF1>;
+   }
+   static void *newArray_vectorlETF1gR(Long_t nElements, void *p) {
+      return p ? ::new(static_cast<::ROOT::Internal::TOperatorNewHelper*>(p)) vector<TF1>[nElements] : new vector<TF1>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlETF1gR(void *p) {
+      delete (static_cast<vector<TF1>*>(p));
+   }
+   static void deleteArray_vectorlETF1gR(void *p) {
+      delete [] (static_cast<vector<TF1>*>(p));
+   }
+   static void destruct_vectorlETF1gR(void *p) {
+      typedef vector<TF1> current_t;
+      (static_cast<current_t*>(p))->~current_t();
+   }
+} // end of namespace ROOT for class vector<TF1>
 
 namespace ROOT {
    static TClass *vectorlEReferenceGammaPeakgR_Dictionary();

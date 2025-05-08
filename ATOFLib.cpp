@@ -5,6 +5,65 @@
 #include <TSpectrum.h>
 #pragma once
 
+
+int GetIndexOfMinimum(vector<double> &v)
+{
+	if(v.size()==0)
+	{
+		return -1;
+	}
+	double Min=v[0];
+	int MinIndex=-1;
+	for(unsigned int i=0;i<v.size();i++)
+	{
+		if(v[i]<Min)
+		{
+			MinIndex=i;
+			Min=v[i];
+		}
+	}
+	return MinIndex;
+}
+
+int GetIndexOfMaximum(vector<double> &v)
+{
+	if(v.size()==0)
+	{
+		return -1;
+	}
+	double Max=v[0];
+	int MaxIndex=-1;
+	for(unsigned int i=0;i<v.size();i++)
+	{
+		if(v[i]>Max)
+		{
+			MaxIndex=i;
+			Max=v[i];
+		}
+	}
+	return MaxIndex;
+}
+
+
+std::vector<std::string> SplitString(const std::string &s, char delim, bool MergeDelimeters=true) 
+{
+	std::vector<std::string> result;
+	std::stringstream ss (s);
+	std::string item;
+	while (getline (ss, item, delim)) 
+	{
+		if(!MergeDelimeters)
+		{
+			result.push_back (item);
+		}
+		else if (item.size()>0)
+		{
+			result.push_back (item);
+		}
+	}
+	return result;
+}
+
 void LinearRegression(vector<double> *x, vector<double> *y, vector<double> *x_err, vector<double> *y_err,vector<double> &result)
 {
 	//Митин, формула над формулой 44
@@ -46,6 +105,16 @@ void LinearRegression(vector<double> *x, vector<double> *y, vector<double> *x_er
 
 }
 
+ReferenceGammaPeak::ReferenceGammaPeak(double _XMin,double _XMax,double _PeakMin,double _PeakMax,double _Energy,TH2F *_FullHist)
+{
+	XMin=_XMin;
+	XMax=_XMax;
+	PeakMin=_PeakMin;
+	PeakMax=_PeakMax;
+	Energy=_Energy;
+	FullHist=*_FullHist;
+}
+
 void ReferenceGammaPeak::GenerateSubstrateHistogram()
 {
 	if(!fProcess)
@@ -54,7 +123,7 @@ void ReferenceGammaPeak::GenerateSubstrateHistogram()
 		return;
 	}
 	TH2F *h_full=&(fProcess->PureCoincedence);
-	cout<<"1:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
+	//cout<<"1:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
 	
 	int x1Bin=h_full->GetXaxis()->FindBin(XMin);
 	int x2Bin=h_full->GetXaxis()->FindBin(XMax);
@@ -62,12 +131,12 @@ void ReferenceGammaPeak::GenerateSubstrateHistogram()
 	int x1BinPeak=h_full->GetXaxis()->FindBin(PeakMin);
 	int x2BinPeak=h_full->GetXaxis()->FindBin(PeakMax);
 	
-	int NBinsX=h_full->GetNbinsX();
+	//int NBinsX=h_full->GetNbinsX();
 	int NBinsY=h_full->GetNbinsY();
 	double BinWidthY=h_full->GetYaxis()->GetBinWidth(1);
 	double BinWidthX=h_full->GetXaxis()->GetBinWidth(1);
 	
-	cout<<"2:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
+	//cout<<"2:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
 	
 	FullY=*(h_full->ProjectionY());  SubstrateY=*(h_full->ProjectionY());  PeakY=*(h_full->ProjectionY());
 	TString OneDimName(h_full->GetName());
@@ -75,7 +144,7 @@ void ReferenceGammaPeak::GenerateSubstrateHistogram()
 	
 	FullX=TH1D(OneDimName+"_full_px",OneDimName+"_full_px",x2Bin-x1Bin+1,h_full->GetXaxis()->GetBinCenter(x1Bin)-0.5*BinWidthX,h_full->GetXaxis()->GetBinCenter(x2Bin)+0.5*BinWidthX);
 	
-	cout<<"3:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
+	//cout<<"3:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
 	SubstrateX=FullX; PeakX=FullX;
 	
 	OneDimName.ReplaceAll("_pure","_peak_%d");
@@ -93,12 +162,12 @@ void ReferenceGammaPeak::GenerateSubstrateHistogram()
 	
 	SubstrateX.Reset();
 	SubstrateY.Reset();
-	cout<<"4:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
+	//cout<<"4:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
 	
 	if(Use2Dhist)
 	{
-		cout<<"5:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
-		cout<<"FullHist: "<<XMin<<" "<<XMax<<" "<<h_full->GetYaxis()->GetBinCenter(1)-BinWidthY<<" "<<h_full->GetYaxis()->GetBinCenter(NBinsY+1)+BinWidthY<<"\n";
+		//cout<<"5:"<<h_full->GetYaxis()->GetBinCenter(1)<<"\n";
+		//cout<<"FullHist: "<<XMin<<" "<<XMax<<" "<<h_full->GetYaxis()->GetBinCenter(1)-BinWidthY<<" "<<h_full->GetYaxis()->GetBinCenter(NBinsY+1)+BinWidthY<<"\n";
 		FullHist=CutTH2(h_full,XMin,XMax,h_full->GetYaxis()->GetBinCenter(1)-BinWidthY,h_full->GetYaxis()->GetBinCenter(NBinsY+1)+BinWidthY);
 		TString HistName(h_full->GetName());
 		HistName.ReplaceAll("_pure","_peak_%d");
@@ -238,13 +307,13 @@ void LinearRegression(vector<Float_t> *xData, vector<Float_t> *sData,int indexMi
 	{
 		indexMin=0;
 	}
-	if(indexMax>=sData->size()-1)
+	if(indexMax>=int(sData->size())-1)
 	{
 		indexMax=sData->size()-1;
 	}
 	int n=0;
 	//cout<<"indexMin indexMax:"<<indexMin<<" "<<indexMax<<"\n";
-	if((indexMin<sData->size())&&(indexMax<sData->size())&&(indexMin<indexMax))
+	if((indexMin<int(sData->size()))&&(indexMax<int(sData->size()))&&(indexMin<indexMax))
 	{
 		for(int i=indexMin; i < indexMax; i++)
 		{
@@ -297,7 +366,7 @@ void AddPointToTGraphErrors(TGraphErrors *gr,double x,double y,double ex, double
 		else
 		{
 			bool Found=false;
-			for(unsigned int i=0;i<gr->GetN()-1;i++)
+			for(int i=0;i<gr->GetN()-1;i++)
 			{
 				double _x,_y;
 				gr->GetPoint(i,_x,_y);
@@ -310,7 +379,7 @@ void AddPointToTGraphErrors(TGraphErrors *gr,double x,double y,double ex, double
 			}
 			if(!Found)
 			{
-				for(unsigned int i=0;i<gr->GetN()-1;i++)
+				for(int i=0;i<gr->GetN()-1;i++)
 				{
 					double _x,_y;
 					double __x,__y;
@@ -446,6 +515,137 @@ void TOFWindow::GetParametersFromTOFWindow(TOFWindow *w, bool UseTSpectrum)
 	
 }
 
+void TOFWindow::AttachFitFunction(TF1 *PrevFit)
+{
+	string FuncStr(PrevFit->GetTitle());
+	vector<string> Elements=SplitString(FuncStr,'+');
+	vector<double> Parameters;
+	vector<double> PeakHeigths;
+	vector<double> PeakPositions;
+	vector<double> PeakSigmas;
+	
+	vector<double> Coefficients;//показывает долю в конкретном пике от максимума
+	TF1 gaus("gaus","gaus",-100,100);
+	TF1 Substrate;
+	for(int i=0;i<PrevFit->GetNpar();i++)
+	{
+		Parameters.push_back(PrevFit->GetParameter(i));
+	}
+	int ParIter=0;
+	for(unsigned int i=0;i<Elements.size();i++)
+	{
+		if(Elements[i].find("gaus(")!=string::npos)
+		{
+			//cout<<"Elements[i]:"<<Elements[i]<<"\n";
+			PeakHeigths.push_back(Parameters[ParIter]);
+			PeakPositions.push_back(Parameters[ParIter+1]);
+			PeakSigmas.push_back(Parameters[ParIter+2]);
+			ParIter+=3;
+			Components.push_back(TF1(TString::Format("Peak_%d",i),"gaus(0)",PrevFit->GetXmin(),PrevFit->GetXmax()));
+		}
+		else if(Elements[i].find("pol")!=string::npos)
+		{
+			vector<string> tmp=SplitString(Elements[i],'(');
+			Substrate=TF1("Substrate",tmp[0].c_str(),PrevFit->GetXmin(),PrevFit->GetXmax());
+			//cout<<"Elements[i]:"<<Elements[i]<<"\n";
+			for(int p=0;p<Substrate.GetNpar();p++)
+			{
+				Substrate.SetParameter(p,Parameters[ParIter]);
+				//cout<<"p:"<<p<<" "<<Parameters[ParIter]<<"\n";
+				ParIter++;
+			}
+		}
+	}
+	
+	
+	for(unsigned int i=0;i<PeakHeigths.size();i++)
+	{
+		double Sum=0;
+		for(unsigned int j=0;j<PeakHeigths.size();j++)
+		{
+			gaus.SetParameters(PeakHeigths[j],PeakPositions[j],PeakSigmas[j]);
+			Sum+=gaus.Eval(PeakPositions[i]);
+		}
+		Coefficients.push_back(PeakHeigths[i]/Sum);
+	}
+	
+	double MinSubstrate=PrevFit->GetXmax(),MaxSubstrate=PrevFit->GetXmin();
+	for(unsigned int i=0;i<PeakPositions.size();i++)
+	{
+		if(MinSubstrate>PeakPositions[i]-4*PeakSigmas[i])
+		{
+			MinSubstrate=PeakPositions[i]-4*PeakSigmas[i];
+		}
+		if(MaxSubstrate<PeakPositions[i]+4*PeakSigmas[i])
+		{
+			MaxSubstrate=PeakPositions[i]+4*PeakSigmas[i];
+		}
+	}
+	
+	//int MaxIndex=GetIndexOfMaximum(PeakHeigths);
+	
+	TGraphErrors gr;
+	
+	int MinBin=TOFSpectrum.FindBin(PrevFit->GetXmin());
+	int MaxBin=TOFSpectrum.FindBin(PrevFit->GetXmax());
+	TH1D Peaks("Peaks","Peaks",MaxBin-MinBin,PrevFit->GetXmin(),PrevFit->GetXmax());
+	
+	for(int i=MinBin;i<=MaxBin;i++)
+	{
+		int N=gr.GetN();
+		double Center=TOFSpectrum.GetBinCenter(i);
+		if(Center<MinSubstrate||Center>MaxSubstrate)
+		{
+			gr.SetPoint(N,TOFSpectrum.GetBinCenter(i),TOFSpectrum.GetBinContent(i));
+			gr.SetPointError(N,0,TOFSpectrum.GetBinError(i));
+		}
+	}
+	gr.Fit(&Substrate,"QR","",PrevFit->GetXmin(),PrevFit->GetXmax());
+
+	
+	for(int i=MinBin;i<=MaxBin;i++)
+	{
+		Peaks.SetBinContent(i+1-MinBin,TOFSpectrum.GetBinContent(i)-Substrate.Eval(TOFSpectrum.GetBinCenter(i)));
+		Peaks.SetBinError(i+1-MinBin,TOFSpectrum.GetBinError(i));
+	}
+
+	TF1 NewFit(TString(PrevFit->GetName())+"_1",FuncStr.c_str(),PrevFit->GetXmin(),PrevFit->GetXmax());
+	ParIter=0;
+	for(unsigned int i=0;i<PeakHeigths.size();i++)
+	{
+		NewFit.SetParameter(ParIter,Coefficients[i]*PeakHeigths[i]);
+		NewFit.SetParameter(ParIter+1,PeakPositions[i]);
+		NewFit.SetParameter(ParIter+2,PeakSigmas[i]);
+		NewFit.SetParLimits(ParIter,0,5*Coefficients[i]*PeakHeigths[i]);
+		NewFit.SetParLimits(ParIter+1,PeakPositions[i]-2,PeakPositions[i]+2);
+		NewFit.SetParLimits(ParIter+2,0.5*PeakSigmas[i],1.2*PeakSigmas[i]);
+		
+		ParIter+=3;
+	}
+	for(int i=ParIter;i<NewFit.GetNpar();i++)
+	{
+		NewFit.SetParameter(i,Substrate.GetParameter(i-ParIter));
+	}
+	FitFunction=NewFit;
+}
+
+void TOFWindow::FitWindow()
+{
+	TOFSpectrum.Fit(&(FitFunction),"QR","",FitFunction.GetXmin(),FitFunction.GetXmax());
+	int ParIndex=0;
+	for(unsigned int i=0;i<Components.size();i++)
+	{
+		Components[i].SetParameter(0,FitFunction.GetParameter(ParIndex));
+		Components[i].SetParameter(1,FitFunction.GetParameter(ParIndex+1));
+		Components[i].SetParameter(2,FitFunction.GetParameter(ParIndex+2));
+		
+		Components[i].SetParError(0,FitFunction.GetParError(ParIndex));
+		Components[i].SetParError(1,FitFunction.GetParError(ParIndex+1));
+		Components[i].SetParError(2,FitFunction.GetParError(ParIndex+2));
+		ParIndex+=3;
+	}
+}
+
 void TOFWindow::GenerateNames()
 {
 	TOFSpectrum.SetName(fATOF->FullSpectrum.GetName()+TString::Format("_TW_%d_%d",(int)MinE,(int)MaxE));
@@ -492,13 +692,14 @@ void TOFWindow::SaveToRoot(TFile *f)
 
 }
 
-void TOFWindow::Draw()
+void TOFWindow::Draw(Option_t * 	option)
 {
-	TOFSpectrum.Draw("hist");
+	
+	TOFSpectrum.Draw(option);
 	TLine *l=new TLine();
 	if(Fitted)
 	{
-		for(int i=0;i<PosValues.size();i++)
+		for(unsigned int i=0;i<PosValues.size();i++)
 		{
 			l->SetLineColor(i+1);
 			l->DrawLine(PosValues[i],TOFSpectrum.GetMinimum(),PosValues[i],TOFSpectrum.GetMaximum());
@@ -506,7 +707,7 @@ void TOFWindow::Draw()
 		gStyle->SetOptFit(1111);
 		//FitFunction.SetLineWidth(2);
 		FitFunction.SetLineColor(2);
-		FitFunction.Draw("same");
+		FitFunction.Draw("same"+TString(option));
 		gPad->GetCanvas()->Modified();
 		gPad->GetCanvas()->Update();
 	}
@@ -641,7 +842,7 @@ void TOFWindow::AddPointToCompGraphAuto()
 	{
 		for(int i=0;i<NPeaks;i++)
 		{
-			double Diff=0;
+			//double Diff=0;
 			double E=MinE+(MaxE-MinE)/2;
 			int ParNumberPos=FitFunction.GetParNumber(TString::Format("Pos_%d",i));
 			int ParNumberSig=FitFunction.GetParNumber(TString::Format("Sigma_%d",i));
@@ -670,7 +871,7 @@ void TOFWindow::FindPeaksWithTSpectrum()
 	if(PosValues.size()>3)
 	{
 		cout<<"FindPeaksWithTSpectrum!\n";
-		int NPeaks=PosValues.size()-2;
+		//int NPeaks=PosValues.size()-2;
 		TSpectrum *s = new TSpectrum(PosValues.size()-2,4);
 		int nfound = s->Search(&TOFSpectrum,1,"",0.01);
 		Double_t *xpeaks;
@@ -681,7 +882,7 @@ void TOFWindow::FindPeaksWithTSpectrum()
 			Found[i]=xpeaks[i];
 		}
 		sort(Found.begin(),Found.end());
-		for(int i=1;i<PosValues.size()-1;i++)
+		for(unsigned int i=1;i<PosValues.size()-1;i++)
 		{
 			if(nfound>i-1)
 			{
@@ -691,6 +892,7 @@ void TOFWindow::FindPeaksWithTSpectrum()
 	}
 	
 }
+
 
 void TOFWindow::CreateFitFunction()
 {
@@ -818,7 +1020,7 @@ void TOFWindow::CreateFitFunction()
 	}*/
 }
 
-void TOFComponent::FillComponent()
+void TOFComponent::FillComponent(string AnalysisType)
 {
 	SpectrumHist=TH1D(fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d",CompNumber),fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d; E,keV; Count",CompNumber),fATOF->FullSpectrum.GetNbinsX(),fATOF->FullSpectrum.GetXaxis()->GetXmin(),fATOF->FullSpectrum.GetXaxis()->GetXmax());
 	bool Generate2d=false;
@@ -832,12 +1034,78 @@ void TOFComponent::FillComponent()
 		}
 	}
 	//SpectrumHist2D
-
+	int AType=0;//0- BordersFit, 1-PeakSigmaFit,2-BordersGraph, 3-PeakSigmaGraph
+	if(AnalysisType == "BordersFit")
+	{
+		AType=0;
+	}
+	else if(AnalysisType == "PeakSigmaFit")
+	{
+		AType=1;
+	}
+	else if(AnalysisType == "BordersGraph")
+	{
+		AType=2;
+	}
+	else if(AnalysisType == "PeakSigmaGraph")
+	{
+		AType=3;
+	}
+	
+	
 	for(int i=1;i<fATOF->FullSpectrum.GetNbinsX()+1;i++)
 	{
-		double Pos=0;
-		double Sig=0;
 		double E=fATOF->FullSpectrum.GetXaxis()->GetBinCenter(i);
+		double LeftBorderValue=0,RightBorderValue=0;
+		
+		if(fATOF)
+		{
+			if(E<fATOF->TOFDependenceLeft)
+			{
+				E=fATOF->TOFDependenceLeft;
+			}
+			else if(E>fATOF->TOFDependenceRight)
+			{
+				E=fATOF->TOFDependenceRight;
+			}
+		}
+		
+		
+		if(AType==0)
+		{
+			LeftBorderValue=LeftBordersFit.Eval(E);
+			RightBorderValue=LeftBordersFit.Eval(E);
+		}
+		else if(AType==1)
+		{
+			double Pos=0;
+			double Sig=0;
+			
+			Pos=PeakPositions.Eval(E);
+			Sig=SigmaValues.Eval(E);
+			
+			LeftBorderValue=Pos-Sig*NSigmaLeft;
+			RightBorderValue=Pos+Sig*NSigmaRight;
+		}
+		else if(AType==2)
+		{
+			LeftBorderValue=LeftBorderGraph.Eval(E);
+			RightBorderValue=RightBorderGraph.Eval(E);
+		}
+		else if(AType==3)
+		{
+			double Pos=0;
+			double Sig=0;
+			
+			Pos=PeakPositionGraph.Eval(E);
+			Sig=SigmaGraph.Eval(E);
+			
+			LeftBorderValue=Pos-Sig*NSigmaLeft;
+			RightBorderValue=Pos+Sig*NSigmaRight;
+		}
+		/*double Pos=0;
+		double Sig=0;
+		
 		if(Fitted)
 		{
 			Pos=PeakPositions.Eval(E);
@@ -863,12 +1131,16 @@ void TOFComponent::FillComponent()
 				Sig=SigmaGraph.Eval(fATOF->TOFDependenceRight);
 			}
 		}
-
+		
 
 		LeftBorderGraph.SetPoint(LeftBorderGraph.GetN(),fATOF->FullSpectrum.GetXaxis()->GetBinCenter(i),Pos-NSigmaLeft*Sig);
 		RightBorderGraph.SetPoint(RightBorderGraph.GetN(),fATOF->FullSpectrum.GetXaxis()->GetBinCenter(i),Pos+NSigmaRight*Sig);
-		int YMin=fATOF->PureCoincedence.GetYaxis()->FindBin(Pos-NSigmaLeft*Sig);
-		int YMax=fATOF->PureCoincedence.GetYaxis()->FindBin(Pos+NSigmaRight*Sig);
+		*/
+		
+		int YMin=fATOF->PureCoincedence.GetYaxis()->FindBin(LeftBorderValue);
+		int YMax=fATOF->PureCoincedence.GetYaxis()->FindBin(RightBorderValue);
+		
+		
 		double Value=0,Error=0;
 		for(int j=YMin;j<=YMax;j++)
 		{
@@ -895,7 +1167,13 @@ void ATOFProcess::ParseName()
 	sstr>>name>>BeamNumber>>DetNumber;
 }
 
-
+void ATOFProcess::AttachFitFunction(TF1 *PrevFit)
+{
+	for(unsigned int i=0;i<TOFWindows.size();i++)
+	{
+		TOFWindows[i].AttachFitFunction(PrevFit);
+	}
+}
 
 void ATOFProcess::AutomaticTOFFit(ATOFProcess *proc)
 {
@@ -1047,9 +1325,75 @@ void ATOFProcess::GetParametersFromATOF(ATOFProcess *p)
 	CurrentWindowNumber=p->CurrentWindowNumber;
 }
 
+bool CheckEscapeInterval(double E,vector<vector<double> > *Escape=0)
+{
+	if(!Escape)
+	{
+		return false;
+	}
+	for(unsigned int i=0;i<Escape->size();i++)
+	{
+		if(Escape->at(i)[0]>E && Escape->at(i)[1]<E)
+		{
+			return true;
+		}
+		if(Escape->at(i)[1]>E)
+		{
+			return false;
+		}
+	}
+	return false;
+}
+
+void ATOFProcess::GenerateTOFWindows(vector<vector<double> > *Windows,vector<vector<double> > *Escape)
+{
+	TOFWindows.resize(0);
+	TH1D *pX=PureCoincedence.ProjectionX();
+	TH1D pY=*(PureCoincedence.ProjectionY());
+	
+	for(unsigned int i=0;i<Windows->size();i++)
+	{
+		
+		pY.Reset();
+		int MinX=pX->GetXaxis()->FindBin(Windows->at(i)[0]);
+		int MaxX=pX->GetXaxis()->FindBin(Windows->at(i)[1]);
+		
+		//cout<<"borders: "<<MinX<<" "<<MaxX<<"\n";
+		double ECentroid=0,ValuesSum=0;
+		for(int p=MinX;p<=MaxX;p++)
+		{
+			if(!CheckEscapeInterval(pX->GetBinCenter(p),Escape))
+			{
+				ECentroid+=pX->GetBinContent(p)*pX->GetBinCenter(p);
+				ValuesSum+=pX->GetBinContent(p);
+				
+				for(int j=1;j<=pY.GetNbinsX();j++)
+				{
+					double Val=pY.GetBinContent(j), Err=pY.GetBinError(j);
+					pY.SetBinContent(j,Val+PureCoincedence.GetBinContent(p,j));
+					pY.SetBinError(j,Err+pow(PureCoincedence.GetBinError(p,j),2));
+					
+				}
+			}
+			
+		}
+		for(int j=1;j<=pY.GetNbinsX();j++)
+		{
+			pY.SetBinError(j,sqrt(pY.GetBinError(j)));
+		}
+		ECentroid=ECentroid/ValuesSum;
+		TOFWindow TW;
+		TW.fATOF=this;
+		TW.TOFSpectrum=pY;
+		TW.TOFSpectrum.SetName(TString::Format("%s_TW_%d",FullSpectrum.GetName(),int(TOFWindows.size())));
+		TW.MinE=Windows->at(i)[0]; TW.MaxE=Windows->at(i)[1]; TW.Centroid=ECentroid;
+		TOFWindows.push_back(TW);
+	}
+}
 
 void ATOFProcess::GenerateTOFWindows(double WidthValue)
 {
+	TOFWindows.resize(0);
 	double Min=FullSpectrum.GetXaxis()->GetXmin(), Max=FullSpectrum.GetXaxis()->GetXmax();
 	double Start=Min;
 	while(Start<Max)
@@ -1105,7 +1449,7 @@ void ATOFProcess::GenerateAntiCoincedence(double LeftBorder,double RightBorder, 
 		double k=0;
 		if(UseLinearRegression)
 		{
-			double bkg0=BkgValue;
+			//double bkg0=BkgValue;
 			LinearRegression(&x_values,&BkgBinContents,0,BkgBinContents.size(),k,BkgValue);
 			//cout<<"k,a="<<k<<" "<<BkgValue<<" "<<bkg0<<"\n";
 		}
@@ -1126,7 +1470,7 @@ void ATOFProcess::GenerateAntiCoincedence(double LeftBorder,double RightBorder, 
 	GeneratedAnti=true;
 	PeakSubstrateRatio=PureCoincedence.Integral()/PeakSubstrateRatio;
 	Anticoincedence.Scale((CoinRightBorder-CoinLeftBorder)/(RightBorder-LeftBorder));
-	GenerateTOFWindows(500);
+	//GenerateTOFWindows(500);
 }
 
 void ATOFProcess::ProcessComponents()
@@ -1144,8 +1488,6 @@ void ATOFProcess::GenerateAntiCoincedence(ATOFProcess *proc)
 	{
 		return;
 	}
-	
-	
 	/*double YMinAnti=proc->MaxPosition-proc->Anticoincedence.GetYaxis()->GetXmin();
 	double YMaxAnti=proc->MaxPosition-proc->Anticoincedence.GetYaxis()->GetXmax();
 	
@@ -1174,6 +1516,14 @@ void ATOFProcess::GenerateAntiCoincedence(ATOFProcess *proc)
 	GenerateAntiCoincedence(MaxPosition-DistMinAnti,MaxPosition-DistMaxAnti,MaxPosition-DistMinCoin,MaxPosition-DistMaxCoin);
 
 	/*cout<<" Dist:"<<proc->FullSpectrum.GetName()<<" "<<FullSpectrum.GetName()<<" YMinAnti:"<<YMinAnti<<" YMaxAnti:"<<YMaxAnti<<" YMin:"<<YMin<<" YMax:"<<YMax<<" MaxPos:"<<MaxPos<<" DistMinAnti:"<<DistMinAnti<<" DistMaxAnti:"<<DistMaxAnti<<" "<<MaxPosition-DistMinAnti<<" "<<MaxPosition-DistMaxAnti<<" MaxPosition:"<<MaxPosition<<"\n";*/
+}
+
+void ATOFProcess::GenerateComponents(double ReferencePosition)
+{
+	for(unsigned int i=0;i<TOFWindows.size();i++)
+	{
+		SelectPeaksFCN(&(TOFWindows[i]),ReferencePosition);
+	}
 }
 
 void ATOFProcess::DrawInGUI()
@@ -1422,13 +1772,10 @@ void ATOFProcess::RefitAutoFitted()
 
 }
 
-void ATOFProcess::AddReferencePeak(int CompNumber,double XMin, double XMax,double PeakMin,double PeakMax,double Energy)//метод, добавляющий опорный гамма-пик во временную компоненту
+void ATOFProcess::AddReferencePeak(double XMin, double XMax,double PeakMin,double PeakMax,double Energy,int CompNumber)//метод, добавляющий опорный гамма-пик во временную компоненту
 {
-	cout<<"TOFComponents.size(): "<<TOFComponents.size()<<"\n";
-	if(TOFComponents.size()<=CompNumber)
-	{
-		TOFComponents.resize(CompNumber+1);
-	}
+	//cout<<"TOFComponents.size(): "<<TOFComponents.size()<<"\n";
+	
 	ReferenceGammaPeak RGP;
 	RGP.XMin=XMin;
 	RGP.XMax=XMax;
@@ -1438,7 +1785,14 @@ void ATOFProcess::AddReferencePeak(int CompNumber,double XMin, double XMax,doubl
 	RGP.fProcess=this;
 	RGP.Use2Dhist=Use2DhistForReferencePeaks;
 	RGP.GenerateSubstrateHistogram();
-	TOFComponents[CompNumber].ReferencePeaks.push_back(RGP);
+	if(CompNumber>-1)
+	{
+		if(int(TOFComponents.size())<=CompNumber)
+		{
+			TOFComponents.resize(CompNumber+1);
+		}
+		TOFComponents[CompNumber].ReferencePeaks.push_back(RGP);
+	}
 }
 
 void MoveTH2F(TH2F *f1,double Mv)
@@ -1552,6 +1906,17 @@ TH2F CutTH2(TH2F *h1,double x1,double x2,double y1,double y2)
 		x_iter++;
 	}
 	return result;
+}
+
+TOFComponent* ATOFProcess::GetOrCreateTOFComponent(int CompNumber)
+{
+	if(TOFComponents.size()<=CompNumber)
+	{
+		TOFComponents.resize(CompNumber+1);
+		TOFComponents[CompNumber].CompNumber=CompNumber;
+		TOFComponents[CompNumber].fATOF=this;
+	}
+	return &TOFComponents[CompNumber];
 }
 
 void ATOFProcess::Add(ATOFProcess &p,double k,double MV)
@@ -1807,7 +2172,7 @@ GUIclass::GUIclass(vector<ATOFProcess> &_ATOFP, TString _fName, TString _f_time_
 	fName=_fName;
 	//hist=_hist;
 
-	/*LeftBorder=new TLine(); RightBorder=new TLine(); Centroid=new TLine();
+	LeftBorder=new TLine(); RightBorder=new TLine(); Centroid=new TLine();
 	LeftBorder->SetLineColor(2); RightBorder->SetLineColor(6); Centroid->SetLineColor(3);*/
 
 	SetCleanup(kDeepCleanup);
@@ -2008,13 +2373,14 @@ void GUIclass::DoCanvas(Int_t event, Int_t x, Int_t y, TObject *selected)
 	{
 		TCanvas* c2=fCanvas->GetCanvas();
 		c2->cd();
-		double MinX=CurrentHist->GetXaxis()->GetXmin(), MaxX=CurrentHist->GetXaxis()->GetXmax();
+		//double MinX=CurrentHist->GetXaxis()->GetXmin();
+		double MaxX=CurrentHist->GetXaxis()->GetXmax();
 		if(event==11)
 		{
 			c2->cd();
 			TLine *l=new TLine();
 			int Bin=CurrentHist->GetXaxis()->FindBin(c->AbsPixeltoX(x));
-			double BinContent=CurrentHist->GetBinContent(Bin);
+			//double BinContent=CurrentHist->GetBinContent(Bin);
 			l->SetLineColor(CurrentATOF->CurrentWindow->PosValues.size()+1);
 			l->DrawLine(c->AbsPixeltoX(x),CurrentHist->GetMinimum(), c->AbsPixeltoX(x),CurrentHist->GetMaximum());
 			CurrentATOF->CurrentWindow->PosValues.push_back(c->AbsPixeltoX(x));
