@@ -59,20 +59,6 @@ void ProcessHPGe(TOFWindow *w,double ReferencePosition)// у нас по-раз�
 	//за окно мы принимаем 2сигма относительно самых удаленных друг от друга пиков
 	double Left=1e9,Right=-1e9,LeftErr=0,RightErr=0;
 	EstimateBorders(w->Components,w->FitFunction,Left,Right);
-	
-	/*for(unsigned int i=0;i<w->Components.size();i++)
-	{
-		if((Left>w->Components[i].GetParameter(1)-2*w->Components[i].GetParameter(2)) && (w->Components[i].GetParameter(2)<5))
-		{
-			Left=w->Components[i].GetParameter(1)-2*w->Components[i].GetParameter(2);
-			LeftErr=sqrt(pow(w->Components[i].GetParError(1),2)+pow(2*w->Components[i].GetParError(2),2));
-		}
-		if((Right<w->Components[i].GetParameter(1)+2*w->Components[i].GetParameter(2)) && (w->Components[i].GetParameter(2)<5))
-		{
-			Right=w->Components[i].GetParameter(1)+2*w->Components[i].GetParameter(2);
-			RightErr=sqrt(pow(w->Components[i].GetParError(1),2)+pow(2*w->Components[i].GetParError(2),2));
-		}
-	}*/
 	if(N==0)
 	{
 		w->fATOF->TOFDependenceLeft=w->Centroid;
@@ -111,9 +97,6 @@ void ProcessLaBr(TOFWindow *w,double ReferencePosition)
 	FindPeakFromSample(w->Components,ReferencePosition+8,NeutronsPos,NeutronsErr,NeutronPeakNumber);
 	
 	int N=Sample->LeftBorderGraph.GetN();
-	cout<<"N="<<N<<"\n";
-	cout<<"SamplePeakNumber:"<<SamplePeakNumber<<"\n";
-	cout<<"LeftBorderGraph:"<<N<<" "<<w->Centroid<<" "<<SamplePos-2*w->Components[SamplePeakNumber].GetParameter(2)<<"\n";
 	Sample->LeftBorderGraph.SetPoint(N,w->Centroid,SamplePos-2*w->Components[SamplePeakNumber].GetParameter(2));
 	Sample->RightBorderGraph.SetPoint(N,w->Centroid,SamplePos+2*w->Components[SamplePeakNumber].GetParameter(2));
 	
@@ -187,7 +170,7 @@ void ProcessSpectrum2D()
 	for(unsigned int i=0;i<p_HPGe.TOFWindows.size();i++)
 	{
 		p_HPGe.TOFWindows[i].Draw();
-		p_HPGe.TOFWindows[i].FitFunction.Draw("same");
+		//p_HPGe.TOFWindows[i].FitFunction.Draw("same");
 		c.Print("HPGe.pdf","pdf");
 	}
 	

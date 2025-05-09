@@ -21,7 +21,7 @@
 #include <sstream>
 //#include <TGCheckButton.h>
 #pragma once
-#define VERSION 9
+#define VERSION 10
 using namespace std;
 
 class GUIclass;
@@ -36,8 +36,8 @@ void LinearRegression(vector<double> *x, vector<double> *y, vector<double> *x_er
 class ReferenceGammaPeak:public TNamed
 {
 	public:
-	ReferenceGammaPeak();
-	ReferenceGammaPeak(double _XMin,double _XMax,double _PeakMin,double _PeakMax,double _Energy,TH2F *_FullHist);
+	//ReferenceGammaPeak();
+	ReferenceGammaPeak(double _XMin=0,double _XMax=0,double _PeakMin=0,double _PeakMax=0,double _Energy=0,TH2F *_FullHist=0);
 	double XMin=0,XMax=0,PeakMin=0,PeakMax=0,Energy=0;
 	int Averaging=4;
 	TH2F FullHist,SubstrateHist,PeakHist;
@@ -94,7 +94,7 @@ class TOFWindow:public TNamed
 	
 	vector<TF1> Components;
 	void FitWindow();
-	
+	void GenerateFunctionComponents();
 	double LeftBorder=0, RightBorder=0,Centroid = 0;
 	bool Fitted=false;
 	bool ManualFit=false;

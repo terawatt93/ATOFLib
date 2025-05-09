@@ -112,6 +112,7 @@ ReferenceGammaPeak::ReferenceGammaPeak(double _XMin,double _XMax,double _PeakMin
 	PeakMin=_PeakMin;
 	PeakMax=_PeakMax;
 	Energy=_Energy;
+	if(_FullHist)
 	FullHist=*_FullHist;
 }
 
@@ -514,6 +515,42 @@ void TOFWindow::GetParametersFromTOFWindow(TOFWindow *w, bool UseTSpectrum)
 	}
 	
 }
+void TOFWindow::GenerateFunctionComponents()
+{
+	vector<int> Colors={1,2,3,4,6,7,8,9,25,28,30,32,41,52};
+	string FuncStr(FitFunction.GetTitle());
+	vector<string> Elements=SplitString(FuncStr,'+');
+	int ParIter=0;
+	int NComponents=0;
+	for(unsigned int i=0;i<Elements.size();i++)
+	{
+		if(Elements[i].find("gaus(")!=string::npos)
+		{
+			NComponents++;
+		}
+	}
+	if(Components.size()<NComponents)
+	{
+		Components.resize(NComponents);
+		for(int i=0;i<NComponents;i++)
+		{
+			Components[i]=TF1(TString::Format("Peak_%d",i),"gaus(0)",FitFunction.GetXmin(),FitFunction.GetXmax());
+		}
+	}
+	for(unsigned int i=0;i<Elements.size();i++)
+	{
+		if(Elements[i].find("gaus(")!=string::npos)
+		{
+			Components[i].SetParameters(FitFunction.GetParameter(ParIter),FitFunction.GetParameter(ParIter+1),FitFunction.GetParameter(ParIter+2));
+			for(int pp=0;pp<3;pp++)
+			{
+				Components[i].SetParError(pp,FitFunction.GetParError(ParIter+pp));
+			}
+			Components[i].SetLineColor(Colors[i]);
+			ParIter+=3;
+		}
+	}
+}
 
 void TOFWindow::AttachFitFunction(TF1 *PrevFit)
 {
@@ -532,6 +569,7 @@ void TOFWindow::AttachFitFunction(TF1 *PrevFit)
 		Parameters.push_back(PrevFit->GetParameter(i));
 	}
 	int ParIter=0;
+	Components.resize(0);
 	for(unsigned int i=0;i<Elements.size();i++)
 	{
 		if(Elements[i].find("gaus(")!=string::npos)
@@ -600,7 +638,7 @@ void TOFWindow::AttachFitFunction(TF1 *PrevFit)
 			gr.SetPointError(N,0,TOFSpectrum.GetBinError(i));
 		}
 	}
-	gr.Fit(&Substrate,"QR","",PrevFit->GetXmin(),PrevFit->GetXmax());
+	gr.Fit(&Substrate,"R","",PrevFit->GetXmin(),PrevFit->GetXmax());
 
 	
 	for(int i=MinBin;i<=MaxBin;i++)
@@ -631,7 +669,7 @@ void TOFWindow::AttachFitFunction(TF1 *PrevFit)
 
 void TOFWindow::FitWindow()
 {
-	TOFSpectrum.Fit(&(FitFunction),"QR","",FitFunction.GetXmin(),FitFunction.GetXmax());
+	TOFSpectrum.Fit(&(FitFunction),"R","",FitFunction.GetXmin(),FitFunction.GetXmax());
 	Fitted=true;
 	int ParIndex=0;
 	for(unsigned int i=0;i<Components.size();i++)
@@ -695,8 +733,9 @@ void TOFWindow::SaveToRoot(TFile *f)
 
 void TOFWindow::Draw(Option_t * 	option)
 {
-	
+	GenerateFunctionComponents();
 	TOFSpectrum.Draw(option);
+	
 	TLine *l=new TLine();
 	if(Fitted)
 	{
@@ -709,6 +748,12 @@ void TOFWindow::Draw(Option_t * 	option)
 		//FitFunction.SetLineWidth(2);
 		FitFunction.SetLineColor(2);
 		FitFunction.Draw("same"+TString(option));
+		
+		for(unsigned int i=0;i<Components.size();i++)
+		{
+			Components[i].Draw("same"+TString(option));
+		}
+		
 		gPad->GetCanvas()->Modified();
 		gPad->GetCanvas()->Update();
 	}
@@ -1029,7 +1074,7 @@ void TOFComponent::FillComponent(string AnalysisType)
 	}
 	SpectrumHist=TH1D(fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d",CompNumber),fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d; E,keV; Count",CompNumber),fATOF->FullSpectrum.GetNbinsX(),fATOF->FullSpectrum.GetXaxis()->GetXmin(),fATOF->FullSpectrum.GetXaxis()->GetXmax());
 	bool Generate2d=false;
-	cout<<"AnalysisType="<<AnalysisType<<"\n";
+	//cout<<"AnalysisType="<<AnalysisType<<"\n";
 	if(fATOF)
 	{
 		if(fATOF->GenerateTH2)
@@ -1056,7 +1101,7 @@ void TOFComponent::FillComponent(string AnalysisType)
 	{
 		AType=3;
 	}
-	cout<<"AType="<<AType<<"\n";
+	//cout<<"AType="<<AType<<"\n";
 	
 	for(int i=1;i<fATOF->FullSpectrum.GetNbinsX()+1;i++)
 	{
