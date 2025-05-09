@@ -119,7 +119,7 @@ namespace ROOT {
       ::TOFWindow *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TOFWindow >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 88,
+         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 89,
                   typeid(::TOFWindow), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TOFWindow::Dictionary, isa_proxy, 4,
                   sizeof(::TOFWindow) );
@@ -151,7 +151,7 @@ namespace ROOT {
       ::ATOFProcess *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ATOFProcess >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 125,
+         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 126,
                   typeid(::ATOFProcess), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ATOFProcess::Dictionary, isa_proxy, 4,
                   sizeof(::ATOFProcess) );
@@ -182,7 +182,7 @@ namespace ROOT {
       ::GUIclass *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::GUIclass >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 177,
+         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 180,
                   typeid(::GUIclass), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::GUIclass::Dictionary, isa_proxy, 16,
                   sizeof(::GUIclass) );
@@ -548,7 +548,7 @@ namespace ROOT {
       vector<double> *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<double>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<double>", -2, "vector", 389,
+         instance("vector<double>", -2, "vector", 428,
                   typeid(vector<double>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEdoublegR_Dictionary, isa_proxy, 0,
                   sizeof(vector<double>) );
@@ -613,7 +613,7 @@ namespace ROOT {
       vector<TOFWindow> *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<TOFWindow>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<TOFWindow>", -2, "vector", 389,
+         instance("vector<TOFWindow>", -2, "vector", 428,
                   typeid(vector<TOFWindow>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlETOFWindowgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<TOFWindow>) );
@@ -678,7 +678,7 @@ namespace ROOT {
       vector<TOFComponent> *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<TOFComponent>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<TOFComponent>", -2, "vector", 389,
+         instance("vector<TOFComponent>", -2, "vector", 428,
                   typeid(vector<TOFComponent>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlETOFComponentgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<TOFComponent>) );
@@ -743,7 +743,7 @@ namespace ROOT {
       vector<TF1> *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<TF1>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<TF1>", -2, "vector", 389,
+         instance("vector<TF1>", -2, "vector", 428,
                   typeid(vector<TF1>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlETF1gR_Dictionary, isa_proxy, 0,
                   sizeof(vector<TF1>) );
@@ -808,7 +808,7 @@ namespace ROOT {
       vector<ReferenceGammaPeak> *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<ReferenceGammaPeak>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<ReferenceGammaPeak>", -2, "vector", 389,
+         instance("vector<ReferenceGammaPeak>", -2, "vector", 428,
                   typeid(vector<ReferenceGammaPeak>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEReferenceGammaPeakgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<ReferenceGammaPeak>) );

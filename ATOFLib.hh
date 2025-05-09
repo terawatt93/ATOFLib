@@ -63,6 +63,7 @@ class TOFComponent:public TNamed
 	double NSigmaLeft=2.5,NSigmaRight=2.5;//потом добавить поле для редактирования
 	ATOFProcess *fATOF=0;//!
 	bool Fitted=false;
+	string PredefAnalysisType="";//
 	void FillComponent(string AnalysisType="BordersFit");
 	/*
 	 * типы анализа для заполнения компонент. Варианты: BordersFit - границы описаны гладкими функциями, запоняется содержимое между ними
@@ -138,14 +139,14 @@ class ATOFProcess:public TNamed
 	vector<TOFWindow> TOFWindows;
 	void AddReferencePeak(double XMin, double XMax,double PeakMin,double PeakMax,double Energy,int CompNumber=-1);//метод, добавляющий опорный гамма-пик во временную компоненту
 	TOFWindow *CurrentWindow=0;
-	TOFComponent* GetOrCreateComponent(int CompNumber=0);
+	TOFComponent* GetOrCreateTOFComponent(int CompNumber=0);
 	bool GeneratedAnti=false;
 	bool FittedTOF=false;
 	void GenerateTOFWindows(double WidthValue);
 	void GenerateTOFWindows(vector<vector<double> > *Windows,vector<vector<double> > *Escape=0);
 	void AttachFitFunction(TF1 *PrevFit);
 	
-	void (*SelectPeaksFCN)(TOFWindow *w,double ReferencePosition);
+	void (*SelectPeaksFCN)(TOFWindow *w,double ReferencePosition);//!
 	void GenerateComponents(double ReferencePosition=-1e9);//эта функция выполняет построение спектров в компонентах
 	
 	double AntiLeft,AntiRight,CoinLeft,CoinRight;
@@ -169,6 +170,7 @@ class ATOFProcess:public TNamed
 	void RefitAutoFitted();
 	void Add(ATOFProcess &p,double k=-1,double TMove=0);
 	double PeakSubstrateRatio=0;
+	void ReadFromTFile_Full(TFile *f,TString hName);
 	double TOFDependenceLeft=0,TOFDependenceRight=10000;//границы для временных окон по энергии: если энергия лежит вне этих окон, то ширина и положение фиксируются по ближайшей границе 
 	ATOFProcess *ReferenceATOF=0;//!
 	ClassDef(ATOFProcess,VERSION);

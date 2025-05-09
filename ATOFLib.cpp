@@ -632,6 +632,7 @@ void TOFWindow::AttachFitFunction(TF1 *PrevFit)
 void TOFWindow::FitWindow()
 {
 	TOFSpectrum.Fit(&(FitFunction),"QR","",FitFunction.GetXmin(),FitFunction.GetXmax());
+	Fitted=true;
 	int ParIndex=0;
 	for(unsigned int i=0;i<Components.size();i++)
 	{
@@ -1022,9 +1023,13 @@ void TOFWindow::CreateFitFunction()
 
 void TOFComponent::FillComponent(string AnalysisType)
 {
+	if(AnalysisType=="")
+	{
+		AnalysisType=PredefAnalysisType;
+	}
 	SpectrumHist=TH1D(fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d",CompNumber),fATOF->FullSpectrum.GetName()+TString::Format("_comp_%d; E,keV; Count",CompNumber),fATOF->FullSpectrum.GetNbinsX(),fATOF->FullSpectrum.GetXaxis()->GetXmin(),fATOF->FullSpectrum.GetXaxis()->GetXmax());
 	bool Generate2d=false;
-	
+	cout<<"AnalysisType="<<AnalysisType<<"\n";
 	if(fATOF)
 	{
 		if(fATOF->GenerateTH2)
@@ -1051,7 +1056,7 @@ void TOFComponent::FillComponent(string AnalysisType)
 	{
 		AType=3;
 	}
-	
+	cout<<"AType="<<AType<<"\n";
 	
 	for(int i=1;i<fATOF->FullSpectrum.GetNbinsX()+1;i++)
 	{
@@ -1140,10 +1145,12 @@ void TOFComponent::FillComponent(string AnalysisType)
 		int YMin=fATOF->PureCoincedence.GetYaxis()->FindBin(LeftBorderValue);
 		int YMax=fATOF->PureCoincedence.GetYaxis()->FindBin(RightBorderValue);
 		
+		//cout<<"YMin="<<LeftBorderValue<<" YMax="<<RightBorderValue<<"\n";
 		
 		double Value=0,Error=0;
 		for(int j=YMin;j<=YMax;j++)
 		{
+			//cout<<"Value="<<Value<<" Error="<<Error<<"\n";
 			Value+=fATOF->PureCoincedence.GetBinContent(i,j);
 			Error+=pow(fATOF->PureCoincedence.GetBinError(i,j),2);
 			if(Generate2d)
@@ -1475,9 +1482,13 @@ void ATOFProcess::GenerateAntiCoincedence(double LeftBorder,double RightBorder, 
 
 void ATOFProcess::ProcessComponents()
 {
+	/*for(unsigned int i=0;i<TOFWindows.size();i++)
+	{
+		TOFWindows[i].FitWindow();
+	}*/
 	for(unsigned int i=0;i<TOFComponents.size();i++)
 	{
-		if(FittedTOF)
+		//if(FittedTOF)
 		TOFComponents[i].FillComponent();
 	}
 }
@@ -1524,6 +1535,15 @@ void ATOFProcess::GenerateComponents(double ReferencePosition)
 	{
 		SelectPeaksFCN(&(TOFWindows[i]),ReferencePosition);
 	}
+	for(unsigned int i=0;i<TOFComponents.size();i++)
+	{
+		TOFComponents[i].FillComponent("");
+	}
+}
+
+void ATOFProcess::ReadFromTFile_Full(TFile *f,TString hName)
+{
+	FullSpectrum=*((TH2F*)f->Get(hName));
 }
 
 void ATOFProcess::DrawInGUI()
@@ -1914,8 +1934,9 @@ TOFComponent* ATOFProcess::GetOrCreateTOFComponent(int CompNumber)
 	{
 		TOFComponents.resize(CompNumber+1);
 		TOFComponents[CompNumber].CompNumber=CompNumber;
-		TOFComponents[CompNumber].fATOF=this;
+		
 	}
+	TOFComponents[CompNumber].fATOF=this;
 	return &TOFComponents[CompNumber];
 }
 
