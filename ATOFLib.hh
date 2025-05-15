@@ -32,6 +32,7 @@ class TOFComponent;
 #include "TalysLib.hh"
 
 void LinearRegression(vector<double> *x, vector<double> *y, vector<double> *x_err, vector<double> *y_err,vector<double> &result);
+TH2F TransposeTH2(TH2* h);
 
 class ReferenceGammaPeak:public TNamed
 {

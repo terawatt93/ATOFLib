@@ -105,6 +105,29 @@ void LinearRegression(vector<double> *x, vector<double> *y, vector<double> *x_er
 
 }
 
+TH2F TransposeTH2(TH2* h)
+{
+	int NBinsX=h->GetNbinsX();
+	int NBinsY=h->GetNbinsY();
+	
+	double XMin=h->GetXaxis()->GetXmin();
+	double XMax=h->GetXaxis()->GetXmax();
+	
+	double YMin=h->GetYaxis()->GetXmin();
+	double YMax=h->GetYaxis()->GetXmax();
+	
+	TH2F result(TString(h->GetName())+"_T",h->GetTitle(),NBinsY,YMin,YMax,NBinsX,XMin,XMax);
+	for(int i=0;i<NBinsX;i++)
+	{
+		for(int j=0;j<NBinsY;j++)
+		{
+			result.SetBinContent(j+1,i+1,h->GetBinContent(i+1,j+1));
+			result.SetBinError(j+1,i+1,h->GetBinError(i+1,j+1));
+		}
+	}
+	return result;
+}
+
 ReferenceGammaPeak::ReferenceGammaPeak(double _XMin,double _XMax,double _PeakMin,double _PeakMax,double _Energy,TH2F *_FullHist)
 {
 	XMin=_XMin;
@@ -1866,6 +1889,7 @@ void MoveTH2F(TH2F *f1,double Mv)
 	vector<vector<double> > Error;
 	Content.resize(f1->GetNbinsX());
 	Error.resize(f1->GetNbinsX());
+	double BinWidthY=f1->GetYaxis()->GetBinWidth(1);
 	for(int i=0;i<f1->GetNbinsX();i++)
 	{
 		Content[i].resize(f1->GetNbinsY());
@@ -1877,16 +1901,20 @@ void MoveTH2F(TH2F *f1,double Mv)
 			int BinNumber=f1->GetYaxis()->FindBin(NewBinCenter);
 			if(BinNumber==0)
 			{
-				BinNumber=1;
+				continue;
+				//BinNumber=1;
 			}
 			if(BinNumber==f1->GetNbinsY()+1)
 			{
-				BinNumber=f1->GetNbinsY();
+				//BinNumber=f1->GetNbinsY();
+				continue;
 			}
+			
 			Content[i][j]=f1->GetBinContent(i+1,BinNumber);
 			Error[i][j]=f1->GetBinError(i+1,BinNumber);
 		}
 	}
+	f1->Reset();
 	for(int i=0;i<f1->GetNbinsX();i++)
 	{
 		for(int j=0;j<f1->GetNbinsY();j++)

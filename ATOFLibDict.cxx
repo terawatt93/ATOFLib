@@ -55,7 +55,7 @@ namespace ROOT {
       ::ReferenceGammaPeak *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ReferenceGammaPeak >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("ReferenceGammaPeak", ::ReferenceGammaPeak::Class_Version(), "ATOFLib.hh", 36,
+         instance("ReferenceGammaPeak", ::ReferenceGammaPeak::Class_Version(), "ATOFLib.hh", 37,
                   typeid(::ReferenceGammaPeak), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ReferenceGammaPeak::Dictionary, isa_proxy, 4,
                   sizeof(::ReferenceGammaPeak) );
@@ -87,7 +87,7 @@ namespace ROOT {
       ::TOFComponent *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TOFComponent >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("TOFComponent", ::TOFComponent::Class_Version(), "ATOFLib.hh", 52,
+         instance("TOFComponent", ::TOFComponent::Class_Version(), "ATOFLib.hh", 53,
                   typeid(::TOFComponent), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TOFComponent::Dictionary, isa_proxy, 4,
                   sizeof(::TOFComponent) );
@@ -119,7 +119,7 @@ namespace ROOT {
       ::TOFWindow *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::TOFWindow >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 89,
+         instance("TOFWindow", ::TOFWindow::Class_Version(), "ATOFLib.hh", 90,
                   typeid(::TOFWindow), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::TOFWindow::Dictionary, isa_proxy, 4,
                   sizeof(::TOFWindow) );
@@ -151,7 +151,7 @@ namespace ROOT {
       ::ATOFProcess *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::ATOFProcess >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 126,
+         instance("ATOFProcess", ::ATOFProcess::Class_Version(), "ATOFLib.hh", 127,
                   typeid(::ATOFProcess), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::ATOFProcess::Dictionary, isa_proxy, 4,
                   sizeof(::ATOFProcess) );
@@ -182,7 +182,7 @@ namespace ROOT {
       ::GUIclass *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::GUIclass >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 180,
+         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 181,
                   typeid(::GUIclass), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::GUIclass::Dictionary, isa_proxy, 16,
                   sizeof(::GUIclass) );
