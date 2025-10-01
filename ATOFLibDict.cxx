@@ -182,7 +182,7 @@ namespace ROOT {
       ::GUIclass *ptr = nullptr;
       static ::TVirtualIsAProxy* isa_proxy = new ::TInstrumentedIsAProxy< ::GUIclass >(nullptr);
       static ::ROOT::TGenericClassInfo 
-         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 181,
+         instance("GUIclass", ::GUIclass::Class_Version(), "ATOFLib.hh", 182,
                   typeid(::GUIclass), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &::GUIclass::Dictionary, isa_proxy, 16,
                   sizeof(::GUIclass) );

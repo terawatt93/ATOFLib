@@ -114,13 +114,13 @@ class TOFWindow:public TNamed
 	void SaveToRoot(TFile *f);
 	void RemoveFunctionFromHist();
 	int FindTOFComponent(double PosValue, double &_diff_value);
-	void AttachFitFunction(TF1 *PrevFit);
+	void AttachFitFunction(TF1 *PrevFit,double PosDelta=2,double kSigma_min=0.5,double kSigma_max=1.5);
 	void GetParametersFromTOFWindow(TOFWindow *w, bool UseTSpectrum=false);
 	void AddPointToCompGraphAuto();
 	ClassDef(TOFWindow,VERSION);
 };
 
-void MoveTH2F(TH2F *f1,double Mv);
+void MoveTH2F(TH2 *f1,double Mv);
 TH2F CutTH2(TH2F *f1,double x1,double x2,double y1,double y2);
 
 
@@ -145,13 +145,14 @@ class ATOFProcess:public TNamed
 	bool FittedTOF=false;
 	void GenerateTOFWindows(double WidthValue);
 	void GenerateTOFWindows(vector<vector<double> > *Windows,vector<vector<double> > *Escape=0);
-	void AttachFitFunction(TF1 *PrevFit);
+	void AttachFitFunction(TF1 *PrevFit,double PosDelta=2,double kSigma_min=0.5,double kSigma_max=1.5);
 	
 	void (*SelectPeaksFCN)(TOFWindow *w,double ReferencePosition);//!
 	void GenerateComponents(double ReferencePosition=-1e9);//эта функция выполняет построение спектров в компонентах
 	
 	double AntiLeft,AntiRight,CoinLeft,CoinRight;
 	void GenerateAntiCoincedence(double LeftBorder,double RightBorder, double CoinLeftBorder,double CoinRightBorder,bool UseLinearRegression=false);
+	void GenerateAntiCoincedence_GaussianSubstrate(double LeftBorder,double RightBorder, double CoinLeftBorder,double CoinRightBorder,double Thr_min=1000,double Thr_max=8000);
 	void DrawInGUI();
 	void Draw();
 	int CurrentWindowNumber=0;

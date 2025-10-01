@@ -45,7 +45,7 @@ int GetIndexOfMaximum(vector<double> &v)
 }
 
 
-std::vector<std::string> SplitString(const std::string &s, char delim, bool MergeDelimeters=true) 
+/*std::vector<std::string> SplitString(const std::string &s, char delim, bool MergeDelimeters=true) 
 {
 	std::vector<std::string> result;
 	std::stringstream ss (s);
@@ -63,7 +63,7 @@ std::vector<std::string> SplitString(const std::string &s, char delim, bool Merg
 	}
 	return result;
 }
-
+*/
 void LinearRegression(vector<double> *x, vector<double> *y, vector<double> *x_err, vector<double> *y_err,vector<double> &result)
 {
 	//Митин, формула над формулой 44
@@ -575,7 +575,14 @@ void TOFWindow::GenerateFunctionComponents()
 	}
 }
 
-void TOFWindow::AttachFitFunction(TF1 *PrevFit)
+/*class PeakParameters
+{
+	public:
+	double H,H_err,Pos,Pos_err,Sig,Sig_err;
+	
+};*/
+
+void TOFWindow::AttachFitFunction(TF1 *PrevFit,double PosDelta,double kSigma_min,double kSigma_max)
 {
 	string FuncStr(PrevFit->GetTitle());
 	vector<string> Elements=SplitString(FuncStr,'+');
@@ -678,8 +685,8 @@ void TOFWindow::AttachFitFunction(TF1 *PrevFit)
 		NewFit.SetParameter(ParIter+1,PeakPositions[i]);
 		NewFit.SetParameter(ParIter+2,PeakSigmas[i]);
 		NewFit.SetParLimits(ParIter,0,5*Coefficients[i]*PeakHeigths[i]);
-		NewFit.SetParLimits(ParIter+1,PeakPositions[i]-2,PeakPositions[i]+2);
-		NewFit.SetParLimits(ParIter+2,0.5*PeakSigmas[i],1.2*PeakSigmas[i]);
+		NewFit.SetParLimits(ParIter+1,PeakPositions[i]-PosDelta,PeakPositions[i]+PosDelta);
+		NewFit.SetParLimits(ParIter+2,kSigma_min*PeakSigmas[i],kSigma_max*PeakSigmas[i]);
 		
 		ParIter+=3;
 	}
@@ -1242,11 +1249,11 @@ void ATOFProcess::ParseName()
 	sstr>>name>>BeamNumber>>DetNumber;
 }
 
-void ATOFProcess::AttachFitFunction(TF1 *PrevFit)
+void ATOFProcess::AttachFitFunction(TF1 *PrevFit,double PosDelta,double kSigma_min,double kSigma_max)
 {
 	for(unsigned int i=0;i<TOFWindows.size();i++)
 	{
-		TOFWindows[i].AttachFitFunction(PrevFit);
+		TOFWindows[i].AttachFitFunction(PrevFit,PosDelta,kSigma_min,kSigma_max);
 	}
 }
 
@@ -1541,6 +1548,83 @@ void ATOFProcess::GenerateAntiCoincedence(double LeftBorder,double RightBorder, 
 			PeakSubstrateRatio+=BkgValue;
 		}
 		
+	}
+	GeneratedAnti=true;
+	PeakSubstrateRatio=PureCoincedence.Integral()/PeakSubstrateRatio;
+	Anticoincedence.Scale((CoinRightBorder-CoinLeftBorder)/(RightBorder-LeftBorder));
+	//GenerateTOFWindows(500);
+}
+
+
+void ATOFProcess::GenerateAntiCoincedence_GaussianSubstrate(double LeftBorder,double RightBorder, double CoinLeftBorder,double CoinRightBorder,double Thr_min,double Thr_max)
+{
+	double Xmin=FullSpectrum.GetXaxis()->GetXmin();
+	double Xmax=FullSpectrum.GetXaxis()->GetXmax();
+	
+	TF1 Gauss_substrate("gs","gaus(0)+pol1(3)",-1000,1000);
+	FullSpectrum.GetXaxis()->SetRangeUser(Thr_min,Thr_max);
+	TH1D hp=*(FullSpectrum.ProjectionY());
+	hp.GetXaxis()->SetRangeUser(LeftBorder,RightBorder);
+	double Integral_S=hp.Integral();//среднее значение в бине
+	double c0=hp.Interpolate(LeftBorder+1);
+	double h=hp.GetMaximum()-c0;
+	if(h<0)
+	{
+		h=0;
+	}
+	Gauss_substrate.SetParameters(h,hp.GetBinCenter(hp.GetMaximumBin()),(RightBorder-LeftBorder)/6,c0,0);
+	hp.Fit(&Gauss_substrate,"QR","",LeftBorder,RightBorder);
+	FullSpectrum.GetXaxis()->SetRangeUser(Xmin,Xmax);
+	/*hp.Draw("e hist");
+	hp.GetXaxis()->SetRangeUser(LeftBorder,CoinRightBorder);
+	Gauss_substrate.Draw("same");
+	gPad->GetCanvas()->Print("test.pdf","pdf");*/
+	
+	
+	int YMin=FullSpectrum.GetYaxis()->FindBin(LeftBorder);
+	int YMax=FullSpectrum.GetYaxis()->FindBin(RightBorder);
+	
+	int YMinC=FullSpectrum.GetYaxis()->FindBin(CoinLeftBorder);
+	int YMaxC=FullSpectrum.GetYaxis()->FindBin(CoinRightBorder);
+	
+	//нужен коэффициент, позволяющий считать значение в бине по известной функции, описывающей подложку	
+	
+	
+	vector<Float_t> BkgBinContents,x_values;
+	
+	BkgBinContents.resize(YMax-YMin);
+	x_values.resize(YMax-YMin);
+	
+	Anticoincedence=TH2F(TString(FullSpectrum.GetName())+"_anti",TString(FullSpectrum.GetName())+"_anti",FullSpectrum.GetNbinsX(),FullSpectrum.GetXaxis()->GetXmin(),FullSpectrum.GetXaxis()->GetXmax(),YMax-YMin,LeftBorder,RightBorder);
+	Coincedence=TH2F(TString(FullSpectrum.GetName())+"_coin",TString(FullSpectrum.GetName())+"_coin",FullSpectrum.GetNbinsX(),FullSpectrum.GetXaxis()->GetXmin(),FullSpectrum.GetXaxis()->GetXmax(),YMaxC-YMinC,CoinLeftBorder,CoinRightBorder);
+	PureCoincedence=TH2F(TString(FullSpectrum.GetName())+"_pure",TString(FullSpectrum.GetName())+"_pure",FullSpectrum.GetNbinsX(),FullSpectrum.GetXaxis()->GetXmin(),FullSpectrum.GetXaxis()->GetXmax(),YMaxC-YMinC,CoinLeftBorder,CoinRightBorder);
+	MaxPosition=Coincedence.GetYaxis()->GetBinCenter(Coincedence.ProjectionY()->GetMaximumBin());
+	for(int i=1;i<=FullSpectrum.GetNbinsX();i++)
+	{
+		double BkgValue=0;
+		int iterator=0;
+		for(int j=YMin+1;j<=YMax;j++)
+		{
+			Anticoincedence.SetBinContent(i,j-YMin,FullSpectrum.GetBinContent(i,j));
+			BkgValue+=FullSpectrum.GetBinContent(i,j);
+			Anticoincedence.SetBinError(i,j-YMin,sqrt(FullSpectrum.GetBinContent(i,j)));
+			BkgBinContents[j-YMin-1]=(FullSpectrum.GetBinContent(i,j));
+			x_values[j-YMin-1]=(j);
+			iterator++;
+		}
+		//BkgValue=BkgValue/(YMax-YMin);
+		//cout<<"YMax-YMin="<<YMax-YMin<<" "<<iterator<<" "<<x_values.size()<<"\n";
+		
+		for(int j=YMinC+1;j<=YMaxC;j++)
+		{
+			double BinCenter=FullSpectrum.GetYaxis()->GetBinCenter(j);
+			double Corr=Gauss_substrate.Eval(BinCenter)*BkgValue/Integral_S;
+			Coincedence.SetBinContent(i,j-YMinC,FullSpectrum.GetBinContent(i,j));
+			Coincedence.SetBinError(i,j-YMinC,sqrt(FullSpectrum.GetBinContent(i,j)));
+			PureCoincedence.SetBinContent(i,j-YMinC,FullSpectrum.GetBinContent(i,j)-Corr);
+			PureCoincedence.SetBinError(i,j-YMinC,sqrt(FullSpectrum.GetBinContent(i,j)+Corr));
+			PeakSubstrateRatio+=BkgValue;
+		}
 	}
 	GeneratedAnti=true;
 	PeakSubstrateRatio=PureCoincedence.Integral()/PeakSubstrateRatio;
@@ -1883,7 +1967,7 @@ void ATOFProcess::AddReferencePeak(double XMin, double XMax,double PeakMin,doubl
 	}
 }
 
-void MoveTH2F(TH2F *f1,double Mv)
+void MoveTH2F(TH2 *f1,double Mv)
 {
 	vector<vector<double> > Content;
 	vector<vector<double> > Error;
